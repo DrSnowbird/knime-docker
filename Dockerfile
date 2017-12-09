@@ -8,7 +8,7 @@ ENV USER_NAME=${USER_NAME:-developer}
 ENV HOME=/home/${USER_NAME}
 
 #########################################################
-#### ---- Install IntelliJ IDE : MODIFY two lines below ----
+#### ---- Install: MODIFY two lines below ----
 #########################################################
 ENV PRODUCT=knime
 ENV PRODUCT_VERSION=${PRODUCT}_3.5.0
