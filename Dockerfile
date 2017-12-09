@@ -21,15 +21,13 @@ ENV INSTALL_BASE=/opt
 ENV DOWNLOAD_URL=https://download.knime.org/analytics-platform/linux/${PRODUCT_VERSION}.linux.gtk.x86_64.tar.gz
 
 WORKDIR ${INSTALL_BASE}
+
 RUN wget -c ${DOWNLOAD_URL} && \
-    tar xvf $(basename ${DOWNLOAD_URL}) 
-    # && \
-    # rm $(basename ${DOWNLOAD_URL} )
+    tar xvf $(basename ${DOWNLOAD_URL}) && \
+    rm $(basename ${DOWNLOAD_URL} )
     
-VOLUME ${WORKSPACE}
- 
 USER ${USER_NAME}
+
+VOLUME ${WORKSPACE}
 WORKDIR ${WORKSPACE}
 CMD "/opt/${PRODUCT_VERSION}/knime"
-
-
