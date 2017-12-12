@@ -8,7 +8,7 @@ ENV USER_NAME=${USER_NAME:-developer}
 ENV HOME=/home/${USER_NAME}
 
 #########################################################
-#### ---- Install IntelliJ IDE : MODIFY two lines below ----
+#### ---- Install: MODIFY two lines below ----
 #########################################################
 ENV PRODUCT=knime
 ENV PRODUCT_VERSION=${PRODUCT}_3.5.0
@@ -21,15 +21,13 @@ ENV INSTALL_BASE=/opt
 ENV DOWNLOAD_URL=https://download.knime.org/analytics-platform/linux/${PRODUCT_VERSION}.linux.gtk.x86_64.tar.gz
 
 WORKDIR ${INSTALL_BASE}
+
 RUN wget -c ${DOWNLOAD_URL} && \
-    tar xvf $(basename ${DOWNLOAD_URL}) 
-    # && \
-    # rm $(basename ${DOWNLOAD_URL} )
+    tar xvf $(basename ${DOWNLOAD_URL}) && \
+    rm $(basename ${DOWNLOAD_URL} )
     
-VOLUME ${WORKSPACE}
- 
 USER ${USER_NAME}
+
+VOLUME ${WORKSPACE}
 WORKDIR ${WORKSPACE}
-CMD "/opt/${PRODUCT_VERSION}/knime"
-
-
+CMD "/opt/${PRODUCT_VERSION}/${PRODUCT}"

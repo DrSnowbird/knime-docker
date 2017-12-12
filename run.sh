@@ -23,7 +23,7 @@ function displayPortainerURL() {
 # ref: http://fabiorehm.com/blog/2014/09/11/running-gui-apps-with-docker/
 
 ##################################################
-#### ---- Mandatory: Change those ----
+#### ---- If needed, change those ----
 ##################################################
 DOCKER_IMAGE_REPO="$(basename `pwd`)"
 imageTag=${1:-"openkbs/${DOCKER_IMAGE_REPO}"}
@@ -33,16 +33,12 @@ PACKAGE=`echo ${imageTag##*/}|tr "/\-: " "_"`
 docker_volume_data1=/home/developer/data
 local_docker_data1=${baseDataFolder}/${PACKAGE}/data
 
-docker_volume_data2=
-local_docker_data2=
+docker_volume_data2=/home/developer/knime-workspace
+local_docker_data2=${baseDataFolder}/${PACKAGE}/workspace
 
 #### ---- local data folders on the host ----
 mkdir -p ${local_docker_data1}
-#mkdir -p ${local_docker_data2}
-
-#### ---- ports mapping ----
-docker_port1=
-local_docker_port1=
+mkdir -p ${local_docker_data2}
 
 ##################################################
 #### ---- Mostly, you don't need change below ----
@@ -65,7 +61,8 @@ docker run -ti --rm \
     -e DISPLAY=$DISPLAY \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v ${local_docker_data1}:${docker_volume_data1} \
-    ${imageTag}
+    -v ${local_docker_data2}:${docker_volume_data2} \
+     ${imageTag}
     
 echo ">>> Docker Status"
 docker ps -a | grep "${instanceName}"
