@@ -2,7 +2,7 @@
 [![](https://images.microbadger.com/badges/image/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own version badge on microbadger.com")
 * KNIME (latest/3.5.3) + Java 8 (1.8.0_172) JDK + Maven 3.5 + Python 3.5 + X11
 
-## Components:
+# Components:
 
 * [KNIME Platform](https://www.knime.com/download-knime-analytics-platform-sdk) latest (v 3.5.3) for Machine Learning
 * java version "1.8.0_172"
@@ -13,7 +13,7 @@
 * X11
 * Other tools: git wget unzip vim python python-setuptools python-dev python-numpy 
 
-## Run (recommended for easy-start)
+# Run (recommended for easy-start)
 Image is pulling from openkbs/netbeans
 ```
 ./run.sh
@@ -91,6 +91,6 @@ More resource in X11 display of Eclipse on your host machine's OS, please see
 * [X11 Display with Xhost](http://www.ethicalhackx.com/fix-gtk-warning-cannot-open-display/)
 
 # Other possible Issues
-You might see the warning message in the launching xterm console like below, you can just ignore it. I googles around and some blogs just suggested to ignore since the Eclipse IDE still functional ok.
+You might see the warning message in the launching xterm console like below, you can just ignore it. I googles around and some blogs just suggested to ignore since the IDE still functional ok.
 
 
