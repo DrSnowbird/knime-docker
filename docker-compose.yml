@@ -3,7 +3,8 @@ services:
   knime-docker:
     image: openkbs/knime-docker
     build:
-      context: ./Dockerfile
+      context: .
+      dockerfile: Dockerfile
     container_name: knime-docker
     environment:
       - USER_ID=${USER_ID:-1000}
