@@ -12,4 +12,5 @@ services:
       - ./docker.env
     volumes:
       - ./workspace:/home/developer/workspace
+      - ./.eclipse:/home/developer/.eclipse
 
