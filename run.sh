@@ -247,6 +247,12 @@ cleanup
 #### run restart options: { no, on-failure, unless-stopped, always }
 RESTART_OPTION=no
 
+#### -----------------------------------------------------------
+#### ref: Running Docker containers as non root; 
+#####      https://blog.csanchez.org/2017/01/31/running-docker-containers-as-non-root/
+#NON_ROOT_CONFIG="-w /tmp -u 65534 -e _JAVA_OPTIONS=-Duser.home=/tmp -e MAVEN_CONFIG=/tmp"
+NON_ROOT_CONFIG="-w /tmp -u $(id -u $USER) -e _JAVA_OPTIONS=-Duser.home=/tmp -e MAVEN_CONFIG=/tmp"
+
 echo ${DISPLAY}
 xhost +SI:localuser:$(id -un) 
 DISPLAY=${MY_IP}:0 \
