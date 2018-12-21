@@ -13,7 +13,6 @@ ARG PRODUCT=${PRODUCT:-knime}
 ENV PRODUCT=knime
 ENV WORKSPACE=${HOME}/workspace
 
-
 ARG PRODUCT_VERSION=${PRODUCT_VERSION:-3.7.0}
 ENV PRODUCT_VERSION=${PRODUCT_VERSION}
 
@@ -33,11 +32,11 @@ ENV DOWNLOAD_URL=https://download.knime.org/analytics-platform/linux/${PRODUCT}_
 WORKDIR ${INSTALL_BASE}
 
 #### ---- Install for application ----
-RUN wget -c ${DOWNLOAD_URL} && \
-    tar xvf $(basename ${DOWNLOAD_URL}) && \
-    rm $(basename ${DOWNLOAD_URL} )
+RUN sudo wget -c ${DOWNLOAD_URL} && \
+    sudo tar xvf $(basename ${DOWNLOAD_URL}) && \
+    sudo rm $(basename ${DOWNLOAD_URL} )
 
-RUN sudo apt-get install -y libwebkitgtk-3.0-0
+RUN sudo apt-get update -y && sudo apt-get install -y libwebkitgtk-3.0-0
 
 VOLUME ${WORKSPACE}
 
