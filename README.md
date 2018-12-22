@@ -1,16 +1,16 @@
 # KNIME Analytics Platform in Docker
 [![](https://images.microbadger.com/badges/image/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own version badge on microbadger.com")
-* KNIME (latest/3.5.3) + Java 8 (1.8.0_172) JDK + Maven 3.5 + Python 3.5 + X11
+* KNIME (latest/3.7.0 + Java 8 (1.8.0_191) JDK + Maven 3.5 + Python 3.5 + X11
 
 # Components:
 
-* [KNIME Platform](https://www.knime.com/download-knime-analytics-platform-sdk) latest (v 3.5.3) for Machine Learning
-* java version "1.8.0_172"
-  Java(TM) SE Runtime Environment (build 1.8.0_172-b11)
-  Java HotSpot(TM) 64-Bit Server VM (build 25.172-b11, mixed mode)
+* [KNIME Platform](https://www.knime.com/download-knime-analytics-platform-sdk) latest (v 3.7.0) for Machine Learning & Big Data Analytics
+* java version "1.8.0_191"
+  Java(TM) SE Runtime Environment (build 1.8.0_191-b12)
+  Java HotSpot(TM) 64-Bit Server VM (build 25.191-b12, mixed mode)
 * Apache Maven 3.5.3
 * Python 3.5.2
-* X11
+* Gradle 4.9
 * Other tools: git wget unzip vim python python-setuptools python-dev python-numpy 
 
 # Run (recommended for easy-start)
@@ -99,7 +99,63 @@ More resource in X11 display of Eclipse on your host machine's OS, please see
 * [X11 Display problem](https://askubuntu.com/questions/871092/failed-to-connect-to-mir-failed-to-connect-to-server-socket-no-such-file-or-di)
 * [X11 Display with Xhost](http://www.ethicalhackx.com/fix-gtk-warning-cannot-open-display/)
 
-# Other possible Issues
-You might see the warning message in the launching xterm console like below, you can just ignore it. I googles around and some blogs just suggested to ignore since the IDE still functional ok.
+* You might see the warning message in the launching xterm console like below, you can just ignore it. I googles around and some blogs just suggested to ignore since the IDE still functional ok.
 
+# Versions
+```
+JAVA_HOME=/usr/jdk1.8.0_191
+java version "1.8.0_191"
+Java(TM) SE Runtime Environment (build 1.8.0_191-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.191-b12, mixed mode)
+Apache Maven 3.5.4 (1edded0938998edf8bf061f1ceb3cfdeccf443fe; 2018-06-17T18:33:14Z)
+Maven home: /usr/apache-maven-3.5.4
+Java version: 1.8.0_191, vendor: Oracle Corporation, runtime: /usr/jdk1.8.0_191/jre
+Default locale: en_US, platform encoding: ANSI_X3.4-1968
+OS name: "linux", version: "4.15.0-42-generic", arch: "amd64", family: "unix"
+Python 2.7.12
+Python 3.5.2
+pip 18.1 from /usr/local/lib/python3.5/dist-packages/pip (python 3.5)
+pip 18.1 from /usr/local/lib/python3.5/dist-packages/pip (python 3.5)
+
+Welcome to Gradle 4.9!
+
+Here are the highlights of this release:
+ - Experimental APIs for creating and configuring tasks lazily
+ - Pass arguments to JavaExec via CLI
+ - Auxiliary publication dependency support for multi-project builds
+ - Improved dependency insight report
+
+For more details see https://docs.gradle.org/4.9/release-notes.html
+
+
+------------------------------------------------------------
+Gradle 4.9
+------------------------------------------------------------
+
+Build time:   2018-07-16 08:14:03 UTC
+Revision:     efcf8c1cf533b03c70f394f270f46a174c738efc
+
+Kotlin DSL:   0.18.4
+Kotlin:       1.2.41
+Groovy:       2.4.12
+Ant:          Apache Ant(TM) version 1.9.11 compiled on March 23 2018
+JVM:          1.8.0_191 (Oracle Corporation 25.191-b12)
+OS:           Linux 4.15.0-42-generic amd64
+
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=16.04
+DISTRIB_CODENAME=xenial
+DISTRIB_DESCRIPTION="Ubuntu 16.04.3 LTS"
+NAME="Ubuntu"
+VERSION="16.04.3 LTS (Xenial Xerus)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 16.04.3 LTS"
+VERSION_ID="16.04"
+HOME_URL="http://www.ubuntu.com/"
+SUPPORT_URL="http://help.ubuntu.com/"
+BUG_REPORT_URL="http://bugs.launchpad.net/ubuntu/"
+VERSION_CODENAME=xenial
+UBUNTU_CODENAME=xenial
+```
 
