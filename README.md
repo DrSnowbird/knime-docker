@@ -2,6 +2,10 @@
 [![](https://images.microbadger.com/badges/image/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own version badge on microbadger.com")
 * KNIME (latest/3.7.0 + Java 8 (1.8.0_191) JDK + Maven 3.5 + Python 3.5 + X11
 
+# Note: If you need to run KNIME Studio over Openshift, Kubernetes, container cluster platforms, you might want to check out 
+* [openkbs/knime-vnc-docker](https://hub.docker.com/r/openkbs/knime-vnc-docker/)
+* [openkbs/eclipse-photon-vnc-docker](https://hub.docker.com/r/openkbs/eclipse-photon-vnc-docker/)
+
 # Components:
 
 * [KNIME Platform](https://www.knime.com/download-knime-analytics-platform-sdk) latest (v 3.7.0) for Machine Learning & Big Data Analytics
@@ -78,6 +82,11 @@ it will work the same way as your local installed Java's "javac" and "java" comm
 * [KNIME](https://www.knime.com)
 * [KNIME Analytics Platform](https://www.knime.com/download-knime-analytics-platform-sdk)
 * [KNIME FAQ](https://www.knime.com/faq#q6)
+
+# See also VNC/noVNC docker-based IDE or Analytics Platform
+* [consol/ubuntu-xfce-vnc](https://hub.docker.com/r/consol/ubuntu-xfce-vnc/)
+* [openkbs/eclipse-photon-vnc-docker](https://hub.docker.com/r/openkbs/eclipse-photon-vnc-docker/)
+* [openkbs/knime-vnc-docker](https://hub.docker.com/r/openkbs/knime-vnc-docker/)
 
 # See also docker-based IDE
 * [openkbs/rapidminer-docker](https://cloud.docker.com/u/openkbs/repository/docker/openkbs/rapidminer-docker)
