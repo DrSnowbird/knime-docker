@@ -23,12 +23,25 @@ Image is pulling from openkbs/netbeans
 ./run.sh
 ```
 ## Where are workspace and data?
-The "./run.sh" will create and map the container's /home/developer/workspace to the host directory as (unless you change ./.env configuration):
+- The "./run.sh" will create and map the container's data and workspace directories to the host's directory as below (unless you change ./.env configuration).
+- You can copy source data or projects/workflow to these two directory and the KNIME Studio inside the container will have direct access to the files you just copy.
 ```
-$HOME/data-docker/knime-docker/workspace
+$HOME/data-docker/knime-docker
+.
+├── data
+└── workspace
+    └── Example Workflows
+        ├── Basic Examples
+        ├── Customer Intelligence
+        ├── Retail
+        ├── Social Media
+        ├── TheData
+        └── workflowset.meta
+
 ```
 And, "docker-compose" will use the current git project directory's "./workspace" to map the container's /home/developer/workspace:
 ```
+./.eclipse
 ./workspace
 ``` 
 **Note: You can copy your KNIME workflow project in and out the workspaces and it is directly mapped into the container's /home/developer/workspace.**
