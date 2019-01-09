@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<?metadataRepository version='1.1.0'?>
-<repository name='update site: file:/home/developer/.eclipse/1876719250_linux_gtk_x86_64/configuration/org.eclipse.osgi/265/data/listener_1925729951/' type='org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository' version='1'>
-  <properties size='2'>
-    <property name='p2.timestamp' value='1547008079348'/>
-    <property name='site.checksum' value='0'/>
-  </properties>
-</repository>
