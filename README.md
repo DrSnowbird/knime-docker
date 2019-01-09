@@ -27,6 +27,7 @@ Image is pulling from openkbs/netbeans
 - You can copy source data or projects/workflow to these two directory and the KNIME Studio inside the container will have direct access to the files you just copy.
 ```
 $HOME/data-docker/knime-docker
+
 .
 ├── data
 └── workspace
