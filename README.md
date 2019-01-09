@@ -22,6 +22,16 @@ Image is pulling from openkbs/netbeans
 ```
 ./run.sh
 ```
+## Where are workspace and data?
+The "./run.sh" will create and map the container's /home/developer/workspace to the host directory as (unless you change ./.env configuration):
+```
+$HOME/data-docker/knime-docker/workspace
+```
+And, "docker-compose" will use the current git project directory's "./workspace" to map the container's /home/developer/workspace:
+```
+./workspace
+``` 
+**Note: You can copy your KNIME workflow project in and out the workspaces and it is directly mapped into the container's /home/developer/workspace.**
 # Build
 You can build your own image locally.
 ```
