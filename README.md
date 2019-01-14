@@ -1,4 +1,4 @@
-# KNIME Analytics Platform Docker + Maven 3.6 + Python 3.5 + PIP3 18.1 + npm 3.5.2 + nodejs v4.2.6 + Gradle 5.1
+# KNIME Analytics Platform Docker + Maven 3.6 + Python 3.5 + PIP3 18.1 + npm 3.5.2 + nodejs v4.2.6 + Gradle 5.1 + X11 (Desktop)
 [![](https://images.microbadger.com/badges/image/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own version badge on microbadger.com")
 * KNIME (latest/3.7.0 + Java 8 (1.8.0_191) JDK + Maven 3.5 + Python 3.5 + X11
 
@@ -114,7 +114,7 @@ it will work the same way as your local installed Java's "javac" and "java" comm
 * [openkbs/knime-vnc-docker](https://hub.docker.com/r/openkbs/knime-vnc-docker/)
 
 # See Also - docker-based IDE
-* [openkbs/docker-atom-editor](https://hub.docker.com/r/openkbs/docker-atom-editor/)
+* [openkbs/atom-docker](https://hub.docker.com/r/openkbs/atom-docker/)
 * [openkbs/eclipse-oxygen-docker](https://hub.docker.com/r/openkbs/eclipse-oxygen-docker/)
 * [openkbs/eclipse-photon-docker](https://hub.docker.com/r/openkbs/eclipse-photon-docker/)
 * [openkbs/eclipse-photon-vnc-docker](https://hub.docker.com/r/openkbs/eclipse-photon-vnc-docker/)
@@ -138,47 +138,50 @@ More resource in X11 display of Eclipse on your host machine's OS, please see
 
 * You might see the warning message in the launching xterm console like below, you can just ignore it. I googles around and some blogs just suggested to ignore since the IDE still functional ok.
 
-# Versions
+# Releases information
 ```
-JAVA_HOME=/usr/jdk1.8.0_191
+root@b0002788171b:/usr# ./printVersions.sh 
++ echo JAVA_HOME=/usr/java
+JAVA_HOME=/usr/java
++ java -version
 java version "1.8.0_191"
 Java(TM) SE Runtime Environment (build 1.8.0_191-b12)
 Java HotSpot(TM) 64-Bit Server VM (build 25.191-b12, mixed mode)
-Apache Maven 3.5.4 (1edded0938998edf8bf061f1ceb3cfdeccf443fe; 2018-06-17T18:33:14Z)
-Maven home: /usr/apache-maven-3.5.4
++ mvn --version
+Apache Maven 3.6.0 (97c98ec64a1fdfee7767ce5ffb20918da4f719f3; 2018-10-24T18:41:47Z)
+Maven home: /usr/apache-maven-3.6.0
 Java version: 1.8.0_191, vendor: Oracle Corporation, runtime: /usr/jdk1.8.0_191/jre
 Default locale: en_US, platform encoding: ANSI_X3.4-1968
-OS name: "linux", version: "4.15.0-42-generic", arch: "amd64", family: "unix"
+OS name: "linux", version: "4.15.0-43-generic", arch: "amd64", family: "unix"
++ python -V
 Python 2.7.12
++ python3 -V
 Python 3.5.2
++ pip --version
 pip 18.1 from /usr/local/lib/python3.5/dist-packages/pip (python 3.5)
++ pip3 --version
 pip 18.1 from /usr/local/lib/python3.5/dist-packages/pip (python 3.5)
-
-Welcome to Gradle 4.9!
-
-Here are the highlights of this release:
- - Experimental APIs for creating and configuring tasks lazily
- - Pass arguments to JavaExec via CLI
- - Auxiliary publication dependency support for multi-project builds
- - Improved dependency insight report
-
-For more details see https://docs.gradle.org/4.9/release-notes.html
-
++ gradle --version
 
 ------------------------------------------------------------
-Gradle 4.9
+Gradle 5.1.1
 ------------------------------------------------------------
 
-Build time:   2018-07-16 08:14:03 UTC
-Revision:     efcf8c1cf533b03c70f394f270f46a174c738efc
+Build time:   2019-01-10 23:05:02 UTC
+Revision:     3c9abb645fb83932c44e8610642393ad62116807
 
-Kotlin DSL:   0.18.4
-Kotlin:       1.2.41
-Groovy:       2.4.12
-Ant:          Apache Ant(TM) version 1.9.11 compiled on March 23 2018
+Kotlin DSL:   1.1.1
+Kotlin:       1.3.11
+Groovy:       2.5.4
+Ant:          Apache Ant(TM) version 1.9.13 compiled on July 10 2018
 JVM:          1.8.0_191 (Oracle Corporation 25.191-b12)
-OS:           Linux 4.15.0-42-generic amd64
+OS:           Linux 4.15.0-43-generic amd64
 
++ npm --version
+3.5.2
++ nodejs --version
+v4.2.6
++ cat /etc/lsb-release /etc/os-release
 DISTRIB_ID=Ubuntu
 DISTRIB_RELEASE=16.04
 DISTRIB_CODENAME=xenial
@@ -195,4 +198,3 @@ BUG_REPORT_URL="http://bugs.launchpad.net/ubuntu/"
 VERSION_CODENAME=xenial
 UBUNTU_CODENAME=xenial
 ```
-
