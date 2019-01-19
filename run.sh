@@ -9,6 +9,31 @@ if [ $# -lt 1 ]; then
     echo "  ${0} ls -al "
 fi
 
+##########################################################################
+#### ---- RUN Configuration (CHANGE THESE if needed!!!!)          --- ####
+##########################################################################
+
+## -- Change to one (1) if run.sh needs to support VNC/NoVNC-based the Container -- ##
+VNC_BUILD=0
+
+## -- Change to one (1) if run.sh needs to support X11-based the Container -- ##
+X11_BUILD=1
+
+## -- Change to one (1) if run.sh needs to support host's user to run the Container -- ##
+USER_VARS_NEEDED=1
+
+###########################################################################
+## -- docker-compose or docker-stack use only --
+###########################################################################
+
+## -- (this script will include ./.env only if "./docker-run.env" not found
+DOCKER_ENV_FILE="./docker-run.env"
+
+###########################################################################
+#### (Optional - to filter Environmental Variables for Running Docker)
+###########################################################################
+ENV_VARIABLE_PATTERN=""
+
 ###################################################
 #### ---- Change this only to use your own ----
 ###################################################
@@ -62,26 +87,38 @@ LOCAL_VOLUME_DIR="${baseDataFolder}/${PACKAGE}"
 ## -- Container's internal Volume base DIR
 DOCKER_VOLUME_DIR="/home/developer"
 
+###################################################
+#### ---- Detect Docker Run Env files ----
+###################################################
 
-###################################################
-#### ---- Detect docker ----
-###################################################
-DOCKER_ENV_FILE="./.env"
-function detectDockerEnvFile() {
+function detectDockerRunEnvFile() {
     curr_dir=`pwd`
-    if [ -s "./.env" ]; then
-        echo "--- INFO: ./.env Docker Environment file (.env) FOUND!"
-        DOCKER_ENV_FILE="./.env"
+    if [ -s "${DOCKER_ENV_FILE}" ]; then
+        echo "--- INFO: Docker Run Environment file '${DOCKER_ENV_FILE}' FOUND!"
     else
-        echo "--- INFO: ./.env Docker Environment file (.env) NOT found!"
-        if [ -s "./docker.env" ]; then
-            DOCKER_ENV_FILE="./docker.env"
+        echo "*** WARNING: Docker Run Environment file '${DOCKER_ENV_FILE}' NOT found!"
+        echo "*** WARNING: Searching for .env or docker.env as alternative!"
+        echo "*** --->"
+        if [ -s "./docker-run.env" ]; then
+            echo "--- INFO: ./docker-run.env FOUND to use as Docker Run Environment file!"
+            DOCKER_ENV_FILE="./docker-run.env"
         else
-            echo "*** WARNING: Docker Environment file (.env) or (docker.env) NOT found!"
+            if [ -s "./.env" ]; then
+                echo "--- INFO: ./.env FOUND to use as Docker Run Environment file!"
+                DOCKER_ENV_FILE="./.env"
+            else
+                echo "--- INFO: ./.env Docker Environment file (.env) NOT found!"
+                if [ -s "./docker.env" ]; then
+                    echo "--- INFO: ./docker.env FOUND to use as Docker Run Environment file!"
+                    DOCKER_ENV_FILE="./docker.env"
+                else
+                    echo "*** WARNING: Docker Environment file (.env) or (docker.env) NOT found!"
+                fi
+            fi
         fi
     fi
 }
-detectDockerEnvFile
+detectDockerRunEnvFile
 
 ###################################################
 #### ---- Function: Generate volume mappings  ----
@@ -180,6 +217,73 @@ generatePortMapping
 echo ${PORT_MAP}
 
 ###################################################
+#### ---- Generate Environment Variables       ----
+###################################################
+ENV_VARS=""
+function generateEnvVars() {
+    ## -- product key patterns, e.g., "^MYSQL_*"
+    #productEnvVars=`grep -E "^[[:blank:]]*$1[a-zA-Z0-9_]+[[:blank:]]*=[[:blank:]]*[a-zA-Z0-9_]+[[:blank:]]*" ${DOCKER_ENV_FILE}`
+    productEnvVars=`grep -E "^[[:blank:]]*$1.+[[:blank:]]*=[[:blank:]]*.+[[:blank:]]*" ${DOCKER_ENV_FILE} | grep -v "^#"`
+    ENV_VARS=""
+    for vars in ${productEnvVars// /}; do
+        echo "Entry => $vars"
+        if [ "$1" != "" ]; then
+            matched=`echo $vars|grep -E "${1}"`
+            if [ ! "$matched" == "" ]; then
+                ENV_VARS="${ENV_VARS} -e ${vars}"
+            fi
+        else
+            ENV_VARS="${ENV_VARS} -e ${vars}"
+        fi
+    done
+}
+generateEnvVars "${ENV_VARIABLE_PATTERN}"
+echo "ENV_VARS="$ENV_VARS
+
+###################################################
+#### ---- Setup Docker Build Proxy ----
+###################################################
+# export NO_PROXY="localhost,127.0.0.1,.openkbs.org"
+# export HTTP_PROXY="http://gatekeeper-w.openkbs.org:80"
+# when using "wget", add "--no-check-certificate" to avoid https certificate checking failures
+# Note: You can also setup Docker CLI configuration file (~/.docker/config.json), e.g.
+# {
+#   "proxies": {
+#     "default": {
+#       "httpProxy": "http://gatekeeper-w.openkbs.org:80"
+#       "httpsProxy": "http://gatekeeper-w.openkbs.org:80"
+#      }
+#    }
+#  }
+#
+echo "... Setup Docker Run Proxy: ..."
+
+PROXY_PARAM=
+function generateProxyEnv() {
+    if [ "${HTTP_PROXY}" != "" ]; then
+        PROXY_PARAM="${PROXY_PARAM} -e HTTP_PROXY=${HTTP_PROXY}"
+    fi
+    if [ "${HTTPS_PROXY}" != "" ]; then
+        PROXY_PARAM="${PROXY_PARAM} -e HTTPS_PROXY=${HTTPS_PROXY}"
+    fi
+    if [ "${NO_PROXY}" != "" ]; then
+        PROXY_PARAM="${PROXY_PARAM} -e NO_PROXY=\"${NO_PROXY}\""
+    fi
+    if [ "${http_proxy}" != "" ]; then
+        PROXY_PARAM="${PROXY_PARAM} -e HTTP_PROXY=${http_proxy}"
+    fi
+    if [ "${https_proxy}" != "" ]; then
+        PROXY_PARAM="${PROXY_PARAM} -e HTTPS_PROXY=${https_proxy}"
+    fi
+    if [ "${no_proxy}" != "" ]; then
+        PROXY_PARAM="${PROXY_PARAM} -e NO_PROXY=\"${no_proxy}\""
+    fi
+    ENV_VARS="${ENV_VARS} ${PROXY_PARAM}"
+}
+generateProxyEnv
+echo "ENV_VARS=${ENV_VARS}"
+
+###################################################
 #### ---- Function: Generate privilege String  ----
 ####      (Don't change!)
 ###################################################
@@ -218,7 +322,7 @@ function displayURL() {
 }
 
 ###################################################
-#### ---- Replace "Key=Value" withe new value ----
+#### ---- Replace "Key=Value" with new value   ----
 ###################################################
 function replaceKeyValue() {
     inFile=${1:-${DOCKER_ENV_FILE}}
@@ -231,12 +335,43 @@ function replaceKeyValue() {
     sed -i -E 's/^('$keyLike'[[:blank:]]*=[[:blank:]]*).*/\1'$newValue'/' $inFile
 }
 #### ---- Replace docker.env with local user's UID and GID ----
-replaceKeyValue ${DOCKER_ENV_FILE} "USER_ID" "$(id -u $USER)"
-replaceKeyValue ${DOCKER_ENV_FILE} "GROUP_ID" "$(id -g $USER)"
+#replaceKeyValue ${DOCKER_ENV_FILE} "USER_ID" "$(id -u $USER)"
+#replaceKeyValue ${DOCKER_ENV_FILE} "GROUP_ID" "$(id -g $USER)"
+
+###################################################
+#### ---- Get "Key=Value" withe new value ----
+#### Usage: getKeyValuePair <inFile> <key>
+#### Output: Key=Value
+###################################################
+KeyValuePair=""
+function getKeyValuePair() {
+    KeyValuePair=""
+    inFile=${1:-${DOCKER_ENV_FILE}}
+    keyLike=$2
+    if [ "$2" == "" ]; then
+        echo "**** ERROR: Empty Key value! Abort!"
+        exit 1
+    fi
+    matchedKV=`grep -E "^[[:blank:]]*${keyLike}.+[[:blank:]]*=[[:blank:]]*.+[[:blank:]]*" ${DOCKER_ENV_FILE}`
+    for kv in $matchedKV; do
+        echo "KeyValuePair=${matchedKV// /}"
+    done
+}
+#getKeyValuePair "${DOCKER_ENV_FILE}" "MYSQL_DATABASE"
 
 ## -- transform '-' and space to '_' 
 #instanceName=`echo $(basename ${imageTag})|tr '[:upper:]' '[:lower:]'|tr "/\-: " "_"`
 instanceName=`echo $(basename ${imageTag})|tr '[:upper:]' '[:lower:]'|tr "/: " "_"`
+
+################################################
+##### ---- Product Specific Parameters ---- ####
+################################################
+#MYSQL_DATABASE=${MYSQL_DATABASE:-myDB}
+#MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-password}
+#MYSQL_USER=${MYSQL_USER:-user1}
+#MYSQL_PASSWORD=${MYSQL_PASSWORD:-password}
+#### ---- Generate Env. Variables ----
+echo ${ENV_VARS}
 
 echo "---------------------------------------------"
 echo "---- Starting a Container for ${imageTag}"
@@ -247,25 +382,66 @@ cleanup
 #### run restart options: { no, on-failure, unless-stopped, always }
 RESTART_OPTION=no
 
-#### -----------------------------------------------------------
-#### ref: Running Docker containers as non root; 
-#####      https://blog.csanchez.org/2017/01/31/running-docker-containers-as-non-root/
-#NON_ROOT_CONFIG="-w /tmp -u 65534 -e _JAVA_OPTIONS=-Duser.home=/tmp -e MAVEN_CONFIG=/tmp"
-NON_ROOT_CONFIG="-w /tmp -u $(id -u $USER) -e _JAVA_OPTIONS=-Duser.home=/tmp -e MAVEN_CONFIG=/tmp"
+#################################
+## -- USER_VARS into Docker -- ##
+#################################
+if [ ${USER_VARS_NEEDED} -gt 0 ]; then
+    USER_VARS="--user $(id -u $USER)"
+fi
 
-echo ${DISPLAY}
-xhost +SI:localuser:$(id -un) 
-DISPLAY=${MY_IP}:0 \
-docker run -it \
-    --name=${instanceName} \
-    --restart=${RESTART_OPTION} \
-    ${privilegedString} \
-    -e DISPLAY=$DISPLAY \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
-    --user $(id -u $USER) \
-    ${VOLUME_MAP} \
-    ${PORT_MAP} \
-    ${imageTag} $*
+#################################
+## -- VNC-based Docker build --##
+#################################
+# DETECT_VNC_DOCKER=`cat Dockerfile |grep -E "FROM.*vnc.*"`
+# if [ ! "${DETECT_VNC_DOCKER}" = "" ]; then
+#      VNC_BUILD=1
+# fi
 
-#cleanup
+set -x
 
+if [ $VNC_BUILD -gt 0 ]; then
+    #### ----------------------------------- ####
+    #### -- VNC_RESOLUTION setup default --- ####
+    #### ----------------------------------- ####
+    if [ `echo $ENV_VAR|grep VNC_VNC_RESOLUTION` ]; then
+        #VNC_RESOLUTION=1280x1024
+        VNC_RESOLUTION=1920x1080
+        ENV_VARS="${ENV_VARS} -e VNC_RESOLUTION=${VNC_RESOLUTION}" 
+    fi
+	docker run -it \
+	    --name=${instanceName} \
+	    --restart=${RESTART_OPTION} \
+	    ${privilegedString} \
+	    ${ENV_VARS} \
+	    ${VOLUME_MAP} \
+	    ${PORT_MAP} \
+	    ${imageTag} $*
+else
+    if [ ${X11_BUILD} -gt 0 ]; then
+        #### ---- for X11-based ---- ####
+        echo ${DISPLAY}
+        xhost +SI:localuser:$(id -un) 
+        DISPLAY=${MY_IP}:0 \
+        docker run -it \
+            --name=${instanceName} \
+            --restart=${RESTART_OPTION} \
+            ${privilegedString} \
+            -e DISPLAY=$DISPLAY \
+            -v /tmp/.X11-unix:/tmp/.X11-unix \
+            ${USER_VARS} \
+            ${ENV_VARS} \
+            ${VOLUME_MAP} \
+            ${PORT_MAP} \
+            ${imageTag} $*
+    else
+        docker run -it \
+            --name=${instanceName} \
+            --restart=${RESTART_OPTION} \
+            ${privilegedString} \
+            ${USER_VARS} \
+            ${ENV_VARS} \
+            ${VOLUME_MAP} \
+            ${PORT_MAP} \
+            ${imageTag} $*
+    fi
+fi
