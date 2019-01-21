@@ -1,26 +1,49 @@
 #!/bin/bash
 
+set +x
+
 MY_DIR=$(dirname "$(readlink -f "$0")")
 
 if [ $# -lt 1 ]; then
+    echo "--------------------------------------------------------"
     echo "Usage: "
     echo "  ${0} <container_shell_command>"
     echo "e.g.: "
     echo "  ${0} ls -al "
+    echo "  ${0} /bin/bash "
+    echo "--------------------------------------------------------"
 fi
 
-##########################################################################
-#### ---- RUN Configuration (CHANGE THESE if needed!!!!)          --- ####
-##########################################################################
-
-## -- Change to one (1) if run.sh needs to support VNC/NoVNC-based the Container -- ##
-VNC_BUILD=0
-
-## -- Change to one (1) if run.sh needs to support X11-based the Container -- ##
-X11_BUILD=1
+###########################################################################
+#### ---- RUN Configuration (CHANGE THESE if needed!!!!)           --- ####
+###########################################################################
+## Valid BUILD_TYPE values: 
+## BUILD_TYPE:
+##    0: (default) has neither X11 nor VNC/noVNC container build image type
+##    1: X11/Desktip container build image type
+##    2: VNC/noVNC container build image type
+## ------------------------------------------------------------------------
+BUILD_TYPE=1
 
 ## -- Change to one (1) if run.sh needs to support host's user to run the Container -- ##
-USER_VARS_NEEDED=1
+USER_VARS_NEEDED=0
+
+########################################
+#### ---- Usage for BUILD_TYPE ---- ####
+########################################
+function buildTypeUsage() {
+    echo "## ------------------------------------------------------------------------"
+    echo "## Valid BUILD_TYPE values: "
+    echo "##    0: (default) has neither X11 nor VNC/noVNC container build image type"
+    echo "##    1: X11/Desktip container build image type"
+    echo "##    2: VNC/noVNC container build image type"
+    echo "## ------------------------------------------------------------------------"
+}
+
+if [ "${BUILD_TYPE}" -lt 0 ] || [ "${BUILD_TYPE}" -gt 2 ]; then
+    buildTypeUsage
+    exit 1
+fi
 
 ###########################################################################
 ## -- docker-compose or docker-stack use only --
@@ -136,6 +159,13 @@ function hasPattern() {
     fi
 }
 
+DEBUG=0
+function debug() {
+    if [ $DEBUG -gt 0 ]; then
+        echo $*
+    fi
+}
+
 function generateVolumeMapping() {
     if [ "$VOLUMES_LIST" == "" ]; then
         ## -- If locally defined in this file, then respect that first.
@@ -143,7 +173,7 @@ function generateVolumeMapping() {
         VOLUMES_LIST=`cat ${DOCKER_ENV_FILE}|grep "^#VOLUMES_LIST= *"|sed "s/[#\"]//g"|cut -d'=' -f2-`
     fi
     for vol in $VOLUMES_LIST; do
-        echo "$vol"
+        debug "$vol"
         hasColon=`echo $vol|grep ":"`
         ## -- allowing change local volume directories --
         if [ "$hasColon" != "" ]; then
@@ -154,35 +184,35 @@ function generateVolumeMapping() {
                 ## has "./data" on the left
                 if [[ ${right} == "/"* ]]; then
                     ## -- pattern like: "./data:/containerPath/data"
-                    echo "-- pattern like ./data:/data --"
+                    debug "-- pattern like ./data:/data --"
                     VOLUME_MAP="${VOLUME_MAP} -v `pwd`/${left}:${right}"
                 else
                     ## -- pattern like: "./data:data"
-                    echo "-- pattern like ./data:data --"
+                    debug "-- pattern like ./data:data --"
                     VOLUME_MAP="${VOLUME_MAP} -v `pwd`/${left}:${DOCKER_VOLUME_DIR}/${right}"
                 fi
                 mkdir -p `pwd`/${left}
-                ls -al `pwd`/${left}
+                if [ $DEBUG -gt 0 ]; then ls -al `pwd`/${left}; fi
             else
                 ## No "./data" on the left
                 if [[ ${right} == "/"* ]]; then
                     ## -- pattern like: "data:/containerPath/data"
-                    echo "-- pattern like ./data:/data --"
+                    debug "-- pattern like ./data:/data --"
                     VOLUME_MAP="${VOLUME_MAP} -v ${LOCAL_VOLUME_DIR}/${left}:${right}"
                 else
                     ## -- pattern like: "data:data"
-                    echo "-- pattern like data:data --"
+                    debug "-- pattern like data:data --"
                     VOLUME_MAP="${VOLUME_MAP} -v ${LOCAL_VOLUME_DIR}/${left}:${DOCKER_VOLUME_DIR}/${right}"
                 fi
                 mkdir -p ${LOCAL_VOLUME_DIR}/${left}
-                ls -al ${LOCAL_VOLUME_DIR}/${left}
+                if [ $DEBUG -gt 0 ]; then ls -al ${LOCAL_VOLUME_DIR}/${left}; fi
             fi
         else
             ## -- pattern like: "data"
-            echo "-- default sub-directory (without prefix absolute path) --"
+            debug "-- default sub-directory (without prefix absolute path) --"
             VOLUME_MAP="${VOLUME_MAP} -v ${LOCAL_VOLUME_DIR}/$vol:${DOCKER_VOLUME_DIR}/$vol"
             mkdir -p ${LOCAL_VOLUME_DIR}/$vol
-            ls -al ${LOCAL_VOLUME_DIR}/$vol
+            if [ $DEBUG -gt 0 ]; then ls -al ${LOCAL_VOLUME_DIR}/$vol; fi
         fi
     done
 }
@@ -214,31 +244,46 @@ function generatePortMapping() {
 }
 #### ---- Generate Port Mapping ----
 generatePortMapping
-echo ${PORT_MAP}
+echo "PORT_MAP=${PORT_MAP}"
 
 ###################################################
 #### ---- Generate Environment Variables       ----
 ###################################################
 ENV_VARS=""
 function generateEnvVars() {
-    ## -- product key patterns, e.g., "^MYSQL_*"
-    #productEnvVars=`grep -E "^[[:blank:]]*$1[a-zA-Z0-9_]+[[:blank:]]*=[[:blank:]]*[a-zA-Z0-9_]+[[:blank:]]*" ${DOCKER_ENV_FILE}`
-    productEnvVars=`grep -E "^[[:blank:]]*$1.+[[:blank:]]*=[[:blank:]]*.+[[:blank:]]*" ${DOCKER_ENV_FILE} | grep -v "^#"`
-    ENV_VARS=""
+    if [ "${1}" != "" ]; then
+        ## -- product key patterns, e.g., "^MYSQL_*"
+        #productEnvVars=`grep -E "^[[:blank:]]*$1[a-zA-Z0-9_]+[[:blank:]]*=[[:blank:]]*[a-zA-Z0-9_]+[[:blank:]]*" ${DOCKER_ENV_FILE}`
+        productEnvVars=`grep -E "^[[:blank:]]*$1.+[[:blank:]]*=[[:blank:]]*.+[[:blank:]]*" ${DOCKER_ENV_FILE} | grep -v "^#" | grep "${1}"`
+    else
+        ## -- product key patterns, e.g., "^MYSQL_*"
+        #productEnvVars=`grep -E "^[[:blank:]]*$1[a-zA-Z0-9_]+[[:blank:]]*=[[:blank:]]*[a-zA-Z0-9_]+[[:blank:]]*" ${DOCKER_ENV_FILE}`
+        productEnvVars=`grep -E "^[[:blank:]]*$1.+[[:blank:]]*=[[:blank:]]*.+[[:blank:]]*" ${DOCKER_ENV_FILE} | grep -v "^#"`
+    fi
+    ENV_VARS_STRING=""
     for vars in ${productEnvVars// /}; do
-        echo "Entry => $vars"
+        debug "Entry => $vars"
         if [ "$1" != "" ]; then
             matched=`echo $vars|grep -E "${1}"`
             if [ ! "$matched" == "" ]; then
-                ENV_VARS="${ENV_VARS} -e ${vars}"
+                ENV_VARS_STRING="${ENV_VARS_STRING} ${vars}"
             fi
         else
-            ENV_VARS="${ENV_VARS} -e ${vars}"
+            ENV_VARS_STRING="${ENV_VARS_STRING} ${vars}"
         fi
     done
+    ## IFS default is "space tab newline" already
+    #IFS=',; ' read -r -a ENV_VARS_ARRAY <<< "${ENV_VARS_STRING}"
+    read -r -a ENV_VARS_ARRAY <<< "${ENV_VARS_STRING}"
+    # To iterate over the elements:
+    for element in "${ENV_VARS_ARRAY[@]}"
+    do
+        ENV_VARS="${ENV_VARS} -e ${element}"
+    done
+    if [ $DEBUG -gt 0 ]; then echo "ENV_VARS_ARRAY=${ENV_VARS_ARRAY[@]}"; fi
 }
-generateEnvVars "${ENV_VARIABLE_PATTERN}"
-echo "ENV_VARS="$ENV_VARS
+generateEnvVars
+echo "ENV_VARS=${ENV_VARS}"
 
 ###################################################
 #### ---- Setup Docker Build Proxy ----
@@ -389,51 +434,60 @@ if [ ${USER_VARS_NEEDED} -gt 0 ]; then
     USER_VARS="--user $(id -u $USER)"
 fi
 
-#################################
-## -- VNC-based Docker build --##
-#################################
-# DETECT_VNC_DOCKER=`cat Dockerfile |grep -E "FROM.*vnc.*"`
-# if [ ! "${DETECT_VNC_DOCKER}" = "" ]; then
-#      VNC_BUILD=1
-# fi
+echo "--------------------------------------------------------"
+echo "==> Commands to manage Container:"
+echo "--------------------------------------------------------"
+echo "  ./shell.sh : to shell into the container"
+echo "  ./stop.sh  : to stop the container"
+echo "  ./log.sh   : to show the docker run log"
+echo "  ./build.sh : to build the container"
+echo "  ./commit.sh: to push the container image to docker hub"
+echo "--------------------------------------------------------"
 
-set -x
-
-if [ $VNC_BUILD -gt 0 ]; then
-    #### ----------------------------------- ####
-    #### -- VNC_RESOLUTION setup default --- ####
-    #### ----------------------------------- ####
-    if [ `echo $ENV_VAR|grep VNC_VNC_RESOLUTION` ]; then
-        #VNC_RESOLUTION=1280x1024
-        VNC_RESOLUTION=1920x1080
-        ENV_VARS="${ENV_VARS} -e VNC_RESOLUTION=${VNC_RESOLUTION}" 
-    fi
-	docker run -it \
-	    --name=${instanceName} \
-	    --restart=${RESTART_OPTION} \
-	    ${privilegedString} \
-	    ${ENV_VARS} \
-	    ${VOLUME_MAP} \
-	    ${PORT_MAP} \
-	    ${imageTag} $*
-else
-    if [ ${X11_BUILD} -gt 0 ]; then
+case "${BUILD_TYPE}" in
+    0 )
+        ## 0: (default) has neither X11 nor VNC/noVNC container build image type 
+        set -x 
+        docker run -it \
+            --name=${instanceName} \
+            --restart=${RESTART_OPTION} \
+            ${privilegedString} \
+            ${USER_VARS} \
+            ${ENV_VARS} \
+            ${VOLUME_MAP} \
+            ${PORT_MAP} \
+            ${imageTag} $*
+        ;;
+    1)
+        ## 1: X11/Desktip container build image type
         #### ---- for X11-based ---- ####
         echo ${DISPLAY}
         xhost +SI:localuser:$(id -un) 
+        set -x 
         DISPLAY=${MY_IP}:0 \
         docker run -it \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
-            ${privilegedString} \
             -e DISPLAY=$DISPLAY \
             -v /tmp/.X11-unix:/tmp/.X11-unix \
+            ${privilegedString} \
             ${USER_VARS} \
             ${ENV_VARS} \
             ${VOLUME_MAP} \
             ${PORT_MAP} \
             ${imageTag} $*
-    else
+        ;;
+    2)
+        ## 2: VNC/noVNC container build image type
+        #### ----------------------------------- ####
+        #### -- VNC_RESOLUTION setup default --- ####
+        #### ----------------------------------- ####
+        if [ "`echo $ENV_VARS|grep VNC_RESOLUTION`" = "" ]; then
+            #VNC_RESOLUTION=1280x1024
+            VNC_RESOLUTION=1920x1080
+            ENV_VARS="${ENV_VARS} -e VNC_RESOLUTION=${VNC_RESOLUTION}" 
+        fi
+        set -x 
         docker run -it \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
@@ -443,5 +497,11 @@ else
             ${VOLUME_MAP} \
             ${PORT_MAP} \
             ${imageTag} $*
-    fi
-fi
+        ;;
+     *)
+        buildTypeUsage
+        exit 1
+esac
+
+set +x
+

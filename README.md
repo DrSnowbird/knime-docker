@@ -1,4 +1,4 @@
-# KNIME Analytics Platform Docker + Maven 3.6 + Python 3.5 + PIP3 18.1 + npm 3.5.2 + nodejs v4.2.6 + Gradle 5.1 + X11 (Desktop)
+# KNIME Analytics Platform Docker + Maven 3.6 + Python 3.5 + PIP3 18.1 + node 11.7.0 + npm 6.5.0 + Gradle 5.1 + X11 (Desktop)
 [![](https://images.microbadger.com/badges/image/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own version badge on microbadger.com")
 * KNIME (latest/3.7.0 + Java 8 (1.8.0_191) JDK + Maven 3.5 + Python 3.5 + X11
 
@@ -14,7 +14,7 @@
   Java HotSpot(TM) 64-Bit Server VM (build 25.201-b09, mixed mode)
 * Apache Maven 3.6.0
 * Python 3.5.2
-* npm 6.4.1 + node v10.15.0 (from NodeSource official Node Distribution)
+* node v11.7.0 + npm 6.5.0 (from NodeSource official Node Distribution)
 * Gradle 5.1
 * Other tools: git wget unzip vim python python-setuptools python-dev python-numpy 
 
@@ -41,12 +41,16 @@ $HOME/data-docker/knime-docker
         └── workflowset.meta
 
 ```
+
 And, "docker-compose" will use the current git project directory's "./workspace" to map the container's /home/developer/workspace:
+
 ```
 ./.eclipse
 ./workspace
 ``` 
+
 **Note: You can copy your KNIME workflow project in and out the workspaces and it is directly mapped into the container's /home/developer/workspace.**
+
 # Build
 You can build your own image locally.
 ```
@@ -140,7 +144,7 @@ More resource in X11 display of Eclipse on your host machine's OS, please see
 
 # Releases information
 ```
-root@1b69cb491038:/usr# ./printVersions.sh 
+developer@ae7c2cf67330:~/workspace$ /usr/printVersions.sh 
 + echo JAVA_HOME=/usr/java
 JAVA_HOME=/usr/java
 + java -version
@@ -162,6 +166,15 @@ pip 18.1 from /usr/local/lib/python3.5/dist-packages/pip (python 3.5)
 + pip3 --version
 pip 18.1 from /usr/local/lib/python3.5/dist-packages/pip (python 3.5)
 + gradle --version
+
+Welcome to Gradle 5.1.1!
+
+Here are the highlights of this release:
+ - Control which dependencies can be retrieved from which repositories
+ - Production-ready configuration avoidance APIs
+
+For more details see https://docs.gradle.org/5.1.1/release-notes.html
+
 
 ------------------------------------------------------------
 Gradle 5.1.1
@@ -197,5 +210,4 @@ SUPPORT_URL="http://help.ubuntu.com/"
 BUG_REPORT_URL="http://bugs.launchpad.net/ubuntu/"
 VERSION_CODENAME=xenial
 UBUNTU_CODENAME=xenial
-
 ```
