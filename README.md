@@ -1,21 +1,20 @@
-# KNIME Analytics Platform Docker + Maven 3.6 + Python 3.5 + PIP3 18.1 + node 11.7.0 + npm 6.5.0 + Gradle 5.1 + X11 (Desktop)
-[![](https://images.microbadger.com/badges/image/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own version badge on microbadger.com")
-* KNIME (latest/3.7.0 + Java 8 (1.8.0_191) JDK + Maven 3.5 + Python 3.5 + X11
+# KNIME Analytics Platform 3.7.1+Java 8 (1.8.0_202) JDK+Maven 3.6+Python 3.5/2.7+pip 19.0+node 11.11+ npm 6.7+Gradle 5.2+X11 (Desktop)
 
-# Note: If you need to run KNIME Studio over Openshift, Kubernetes, container cluster platforms, you might want to check out 
+[![](https://images.microbadger.com/badges/image/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own version badge on microbadger.com")
+
+# Note: If you need to run KNIME Studio over Openshift, Kubernetes, container cluster platforms using noVNC from any HTML5 capable web browsers, you might want to check out:
 * [openkbs/knime-vnc-docker](https://hub.docker.com/r/openkbs/knime-vnc-docker/)
-* [openkbs/eclipse-photon-vnc-docker](https://hub.docker.com/r/openkbs/eclipse-photon-vnc-docker/)
 
 # Components:
 
-* [KNIME Platform](https://www.knime.com/download-knime-analytics-platform-sdk) latest (v 3.7.0) for Machine Learning & Big Data Analytics
-* java version "1.8.0_201"
-  Java(TM) SE Runtime Environment (build 1.8.0_201-b09)
-  Java HotSpot(TM) 64-Bit Server VM (build 25.201-b09, mixed mode)
+* [KNIME Platform](https://www.knime.com/download-knime-analytics-platform-sdk) latest (v 3.7.1) for Machine Learning & Big Data Analytics
+* java version "1.8.0_202"
+  Java(TM) SE Runtime Environment (build 1.8.0_202-b08)
+  Java HotSpot(TM) 64-Bit Server VM (build 25.202-b08, mixed mode)
 * Apache Maven 3.6.0
-* Python 3.5.2
-* node v11.7.0 + npm 6.5.0 (from NodeSource official Node Distribution)
-* Gradle 5.1
+* Python 3.5.2 / Python 2.7.12 + pip 19.0.3
+* Node v11.11.0 + npm 6.7.0 (from NodeSource official Node Distribution)
+* Gradle 5.2
 * Other tools: git wget unzip vim python python-setuptools python-dev python-numpy 
 
 # Run (recommended for easy-start)
@@ -109,6 +108,7 @@ it will work the same way as your local installed Java's "javac" and "java" comm
 
 # Reference
 * [KNIME](https://www.knime.com)
+* [KNIME Learning Center](https://www.knime.com/resources)
 * [KNIME Analytics Platform](https://www.knime.com/download-knime-analytics-platform-sdk)
 * [KNIME FAQ](https://www.knime.com/faq#q6)
 
@@ -143,67 +143,68 @@ More resource in X11 display of Eclipse on your host machine's OS, please see
 * You might see the warning message in the launching xterm console like below, you can just ignore it. I googles around and some blogs just suggested to ignore since the IDE still functional ok.
 
 # Releases information
-```
-developer@ae7c2cf67330:~/workspace$ /usr/printVersions.sh 
+developer@69db4f81bbd0:~/workspace$ /usr/scripts/printVersions.sh 
 + echo JAVA_HOME=/usr/java
 JAVA_HOME=/usr/java
 + java -version
-java version "1.8.0_201"
-Java(TM) SE Runtime Environment (build 1.8.0_201-b09)
-Java HotSpot(TM) 64-Bit Server VM (build 25.201-b09, mixed mode)
+java version "1.8.0_202"
+Java(TM) SE Runtime Environment (build 1.8.0_202-b08)
+Java HotSpot(TM) 64-Bit Server VM (build 25.202-b08, mixed mode)
 + mvn --version
 Apache Maven 3.6.0 (97c98ec64a1fdfee7767ce5ffb20918da4f719f3; 2018-10-24T18:41:47Z)
 Maven home: /usr/apache-maven-3.6.0
-Java version: 1.8.0_201, vendor: Oracle Corporation, runtime: /usr/jdk1.8.0_201/jre
-Default locale: en_US, platform encoding: ANSI_X3.4-1968
-OS name: "linux", version: "4.15.0-43-generic", arch: "amd64", family: "unix"
+Java version: 1.8.0_202, vendor: Oracle Corporation, runtime: /usr/jdk1.8.0_202/jre
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux", version: "4.18.0-17-generic", arch: "amd64", family: "unix"
 + python -V
 Python 2.7.12
 + python3 -V
 Python 3.5.2
 + pip --version
-pip 18.1 from /usr/local/lib/python3.5/dist-packages/pip (python 3.5)
+pip 19.0.3 from /usr/local/lib/python3.5/dist-packages/pip (python 3.5)
 + pip3 --version
-pip 18.1 from /usr/local/lib/python3.5/dist-packages/pip (python 3.5)
+pip 19.0.3 from /usr/local/lib/python3.5/dist-packages/pip (python 3.5)
 + gradle --version
 
-Welcome to Gradle 5.1.1!
+Welcome to Gradle 5.2.1!
 
 Here are the highlights of this release:
- - Control which dependencies can be retrieved from which repositories
- - Production-ready configuration avoidance APIs
+ - Define sets of dependencies that work together with Java Platform plugin
+ - New C++ plugins with dependency management built-in
+ - New C++ project types for gradle init
+ - Service injection into plugins and project extensions
 
-For more details see https://docs.gradle.org/5.1.1/release-notes.html
+For more details see https://docs.gradle.org/5.2.1/release-notes.html
 
 
 ------------------------------------------------------------
-Gradle 5.1.1
+Gradle 5.2.1
 ------------------------------------------------------------
 
-Build time:   2019-01-10 23:05:02 UTC
-Revision:     3c9abb645fb83932c44e8610642393ad62116807
+Build time:   2019-02-08 19:00:10 UTC
+Revision:     f02764e074c32ee8851a4e1877dd1fea8ffb7183
 
-Kotlin DSL:   1.1.1
-Kotlin:       1.3.11
+Kotlin DSL:   1.1.3
+Kotlin:       1.3.20
 Groovy:       2.5.4
 Ant:          Apache Ant(TM) version 1.9.13 compiled on July 10 2018
-JVM:          1.8.0_201 (Oracle Corporation 25.201-b09)
-OS:           Linux 4.15.0-43-generic amd64
+JVM:          1.8.0_202 (Oracle Corporation 25.202-b08)
+OS:           Linux 4.18.0-17-generic amd64
 
 + npm -v
-6.4.1
+6.7.0
 + node -v
-v10.15.0
+v11.12.0
 + cat /etc/lsb-release /etc/os-release
 DISTRIB_ID=Ubuntu
 DISTRIB_RELEASE=16.04
 DISTRIB_CODENAME=xenial
-DISTRIB_DESCRIPTION="Ubuntu 16.04.3 LTS"
+DISTRIB_DESCRIPTION="Ubuntu 16.04.6 LTS"
 NAME="Ubuntu"
-VERSION="16.04.3 LTS (Xenial Xerus)"
+VERSION="16.04.6 LTS (Xenial Xerus)"
 ID=ubuntu
 ID_LIKE=debian
-PRETTY_NAME="Ubuntu 16.04.3 LTS"
+PRETTY_NAME="Ubuntu 16.04.6 LTS"
 VERSION_ID="16.04"
 HOME_URL="http://www.ubuntu.com/"
 SUPPORT_URL="http://help.ubuntu.com/"

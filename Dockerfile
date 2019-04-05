@@ -13,7 +13,7 @@ ARG PRODUCT=${PRODUCT:-knime}
 ENV PRODUCT=knime
 ENV WORKSPACE=${HOME}/workspace
 
-ARG PRODUCT_VERSION=${PRODUCT_VERSION:-3.7.0}
+ARG PRODUCT_VERSION=${PRODUCT_VERSION:-3.7.1}
 ENV PRODUCT_VERSION=${PRODUCT_VERSION}
 
 ARG PRODUCT_DIR=${PRODUCT_DIR:-knime_${PRODUCT_VERSION}}
@@ -26,13 +26,13 @@ ARG INSTALL_BASE=${INSTALL_BASE:-/opt}
 ENV INSTALL_BASE=${INSTALL_BASE}
 
 ## --- Product Version specific ---
-#ENV DOWNLOAD_URL=https://download.knime.org/analytics-platform/linux/knime_3.7.0.linux.gtk.x86_64.tar
+#ENV DOWNLOAD_URL=https://download.knime.org/analytics-platform/linux/knime_3.7.1.linux.gtk.x86_64.tar
 ENV DOWNLOAD_URL=https://download.knime.org/analytics-platform/linux/${PRODUCT}_${PRODUCT_VERSION}.linux.gtk.x86_64.tar.gz
 
 WORKDIR ${INSTALL_BASE}
 
 #### ---- Install for application ----
-RUN sudo wget -c ${DOWNLOAD_URL} && \
+RUN sudo wget -q -c ${DOWNLOAD_URL} && \
     sudo tar xvf $(basename ${DOWNLOAD_URL}) && \
     sudo rm $(basename ${DOWNLOAD_URL} )
 
