@@ -17,16 +17,72 @@ fi
 ###########################################################################
 #### ---- RUN Configuration (CHANGE THESE if needed!!!!)           --- ####
 ###########################################################################
-## Valid BUILD_TYPE values: 
-## BUILD_TYPE:
+## ------------------------------------------------------------------------
+## Valid "BUILD_TYPE" values: 
 ##    0: (default) has neither X11 nor VNC/noVNC container build image type
 ##    1: X11/Desktip container build image type
 ##    2: VNC/noVNC container build image type
 ## ------------------------------------------------------------------------
 BUILD_TYPE=1
 
-## -- Change to one (1) if run.sh needs to support host's user to run the Container -- ##
+## ------------------------------------------------------------------------
+## Valid "RUN_TYPE" values: 
+##    0: (default) Interactive Container -
+##       ==> Best for Debugging Use
+##    1: Detach Container / Non-Interactive 
+##       ==> Usually, when not in debugging mode anymore, then use 1 as choice.
+##       ==> Or, your frequent needs of the container for DEV environment Use.
+## ------------------------------------------------------------------------
+RUN_TYPE=0
+
+## ------------------------------------------------------------------------
+## Change to one (1) if run.sh needs to use host's user/group to run the Container
+## Valid "USER_VARS_NEEDED" values: 
+##    0: (default) Not using host's USER / GROUP ID
+##    1: Yes, using host's USER / GROUP ID for Container running.
+## ------------------------------------------------------------------------
 USER_VARS_NEEDED=0
+
+## ------------------------------------------------------------------------
+## Valid "RESTART_OPTION" values:
+##  { no, on-failure, unless-stopped, always }
+## ------------------------------------------------------------------------
+RESTART_OPTION=no
+#RESTART_OPTION=unless-stopped
+
+## ------------------------------------------------------------------------
+## More optional values:
+##   Add any additional options here
+## ------------------------------------------------------------------------
+#MORE_OPTIONS="--privileged=true"
+MORE_OPTIONS=""
+
+## ------------------------------------------------------------------------
+## Multi-media optional values:
+##   Add any additional options here
+## ------------------------------------------------------------------------
+#MEDIA_OPTIONS=" --device /dev/snd --device /dev/dri  --device /dev/video0  --group-add audio  --group-add video "
+MEDIA_OPTIONS=" --device /dev/snd --device /dev/dri  --group-add audio  --group-add video "
+#MEDIA_OPTIONS=
+
+###############################################################################
+###############################################################################
+###############################################################################
+#### ---- DO NOT Change the code below UNLESS you really want to !!!!) --- ####
+#### ---- DO NOT Change the code below UNLESS you really want to !!!!) --- ####
+#### ---- DO NOT Change the code below UNLESS you really want to !!!!) --- ####
+###############################################################################
+###############################################################################
+###############################################################################
+
+########################################
+#### ---- Correctness Checking ---- ####
+########################################
+RESTART_OPTION=`echo ${RESTART_OPTION} | sed 's/ //g' | tr '[:upper:]' '[:lower:]' `
+REMOVE_OPTION=" --rm "
+if [ "${RESTART_OPTION}" != "no" ]; then
+    REMOVE_OPTION=""
+fi
 
 ########################################
 #### ---- Usage for BUILD_TYPE ---- ####
@@ -44,6 +100,31 @@ if [ "${BUILD_TYPE}" -lt 0 ] || [ "${BUILD_TYPE}" -gt 2 ]; then
     buildTypeUsage
     exit 1
 fi
+
+########################################
+#### ---- Validate RUN_TYPE    ---- ####
+########################################
+ 
+RUN_OPTION=${RUN_OPTION:-" -it "}
+function validateRunType() {
+    case "${RUN_TYPE}" in
+        0 )
+            RUN_OPTION=" -it "
+            ;;
+        1 )
+            RUN_OPTION=" -d "
+            ;;
+        * )
+            echo "**** ERROR: Incorrect RUN_TYPE: ${RUN_TYPE} is used! Abort ****"
+            exit 1
+            ;;
+    esac
+}
+validateRunType
+echo "RUN_TYPE=${RUN_TYPE}"
+echo "RUN_OPTION=${RUN_OPTION}"
+echo "RESTART_OPTION=${RESTART_OPTION}"
+echo "REMOVE_OPTION=${REMOVE_OPTION}"
 
 ###########################################################################
 ## -- docker-compose or docker-stack use only --
@@ -195,17 +276,33 @@ function generateVolumeMapping() {
                 if [ $DEBUG -gt 0 ]; then ls -al `pwd`/${left}; fi
             else
                 ## No "./data" on the left
-                if [[ ${right} == "/"* ]]; then
-                    ## -- pattern like: "data:/containerPath/data"
-                    debug "-- pattern like ./data:/data --"
-                    VOLUME_MAP="${VOLUME_MAP} -v ${LOCAL_VOLUME_DIR}/${left}:${right}"
+                if [ "$leftHasAbsPath" != "" ]; then
+                    ## Has pattern like "/data" on the left
+                    if [[ ${right} == "/"* ]]; then
+                        ## -- pattern like: "/data:/containerPath/data"
+                        debug "-- pattern like /data:/containerPath/data --"
+                        VOLUME_MAP="${VOLUME_MAP} -v ${left}:${right}"
+                    else
+                        ## -- pattern like: "/data:data"
+                        debug "-- pattern like /data:data --"
+                        VOLUME_MAP="${VOLUME_MAP} -v ${left}:${DOCKER_VOLUME_DIR}/${right}"
+                    fi
+                    mkdir -p ${LOCAL_VOLUME_DIR}/${left}
+                    if [ $DEBUG -gt 0 ]; then ls -al ${LOCAL_VOLUME_DIR}/${left}; fi
                 else
-                    ## -- pattern like: "data:data"
-                    debug "-- pattern like data:data --"
-                    VOLUME_MAP="${VOLUME_MAP} -v ${LOCAL_VOLUME_DIR}/${left}:${DOCKER_VOLUME_DIR}/${right}"
+                    ## No pattern like "/data" on the left
+                    if [[ ${right} == "/"* ]]; then
+                        ## -- pattern like: "data:/containerPath/data"
+                        debug "-- pattern like ./data:/data --"
+                        VOLUME_MAP="${VOLUME_MAP} -v ${LOCAL_VOLUME_DIR}/${left}:${right}"
+                    else
+                        ## -- pattern like: "data:data"
+                        debug "-- pattern like data:data --"
+                        VOLUME_MAP="${VOLUME_MAP} -v ${LOCAL_VOLUME_DIR}/${left}:${DOCKER_VOLUME_DIR}/${right}"
+                    fi
+                    mkdir -p ${LOCAL_VOLUME_DIR}/${left}
+                    if [ $DEBUG -gt 0 ]; then ls -al ${LOCAL_VOLUME_DIR}/${left}; fi
                 fi
-                mkdir -p ${LOCAL_VOLUME_DIR}/${left}
-                if [ $DEBUG -gt 0 ]; then ls -al ${LOCAL_VOLUME_DIR}/${left}; fi
             fi
         else
             ## -- pattern like: "data"
@@ -315,13 +412,13 @@ function generateProxyEnv() {
         PROXY_PARAM="${PROXY_PARAM} -e NO_PROXY=\"${NO_PROXY}\""
     fi
     if [ "${http_proxy}" != "" ]; then
-        PROXY_PARAM="${PROXY_PARAM} -e HTTP_PROXY=${http_proxy}"
+        PROXY_PARAM="${PROXY_PARAM} -e http_proxy=${http_proxy}"
     fi
     if [ "${https_proxy}" != "" ]; then
-        PROXY_PARAM="${PROXY_PARAM} -e HTTPS_PROXY=${https_proxy}"
+        PROXY_PARAM="${PROXY_PARAM} -e https_proxy=${https_proxy}"
     fi
     if [ "${no_proxy}" != "" ]; then
-        PROXY_PARAM="${PROXY_PARAM} -e NO_PROXY=\"${no_proxy}\""
+        PROXY_PARAM="${PROXY_PARAM} -e no_proxy=\"${no_proxy}\""
     fi
     ENV_VARS="${ENV_VARS} ${PROXY_PARAM}"
 }
@@ -350,8 +447,8 @@ echo ${privilegedString}
 #### ---- Mostly, you don't need change below ----
 ###################################################
 function cleanup() {
-    if [ ! "`docker ps -a|grep ${instanceName}`" == "" ]; then
-         docker rm -f ${instanceName}
+    if [ ! "`sudo docker ps -a|grep ${instanceName}`" == "" ]; then
+         sudo docker rm -f ${instanceName}
     fi
 }
 
@@ -424,9 +521,6 @@ echo "---------------------------------------------"
 
 cleanup
 
-#### run restart options: { no, on-failure, unless-stopped, always }
-RESTART_OPTION=no
-
 #################################
 ## -- USER_VARS into Docker -- ##
 #################################
@@ -444,11 +538,46 @@ echo "  ./build.sh : to build the container"
 echo "  ./commit.sh: to push the container image to docker hub"
 echo "--------------------------------------------------------"
 
+#################################
+## ---- Setup X11 Display -_-- ##
+#################################
+function setupDisplayType() {
+    NODE_IP=
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        # ...
+        xhost +SI:localuser:$(id -un) 
+        xhost + 127.0.0.1
+        echo ${DISPLAY}
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        # Mac OSX
+        xhost + 127.0.0.1
+        export DISPLAY=host.docker.internal:0
+        echo ${DISPLAY}
+    elif [[ "$OSTYPE" == "cygwin" ]]; then
+        # POSIX compatibility layer and Linux environment emulation for Windows
+        #export DISPLAY=${NODE_IP}:0 
+        echo ${DISPLAY}
+    elif [[ "$OSTYPE" == "msys" ]]; then
+        # Lightweight shell and GNU utilities compiled for Windows (part of MinGW)
+        #export DISPLAY=${NODE_IP}:0 
+        echo ${DISPLAY}
+    elif [[ "$OSTYPE" == "freebsd"* ]]; then
+        # ...
+        #export DISPLAY=${NODE_IP}:0 
+        echo ${DISPLAY}
+    else
+        # Unknown.
+        echo "Unknown OS TYPE: $OSTYPE! Not supported!"
+        exit 9
+    fi
+    echo ${DISPLAY}
+}
+
 case "${BUILD_TYPE}" in
-    0 )
+    0)
         ## 0: (default) has neither X11 nor VNC/noVNC container build image type 
         set -x 
-        docker run -it \
+        sudo docker run ${REMOVE_OPTION} ${MORE_OPTIONS} ${RUN_OPTION} \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
             ${privilegedString} \
@@ -461,14 +590,17 @@ case "${BUILD_TYPE}" in
     1)
         ## 1: X11/Desktip container build image type
         #### ---- for X11-based ---- ####
-        echo ${DISPLAY}
-        xhost +SI:localuser:$(id -un) 
+        ##
         set -x 
-        DISPLAY=${MY_IP}:0 \
-        docker run -it \
+        #xhost +
+        #xhost +SI:localuser:$(id -un) 
+        #DISPLAY=:0
+        #setupDisplayType
+        echo ${DISPLAY}
+        MORE_OPTIONS="${MORE_OPTIONS} -e DISPLAY=$DISPLAY -v $HOME/.chrome:/data -v /dev/shm:/dev/shm -v /etc/hosts:/etc/hosts"
+        sudo docker run ${REMOVE_OPTION} ${RUN_OPTION} ${MORE_OPTIONS} ${MEDIA_OPTIONS}\
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
-            -e DISPLAY=$DISPLAY \
             -v /tmp/.X11-unix:/tmp/.X11-unix \
             ${privilegedString} \
             ${USER_VARS} \
@@ -488,7 +620,7 @@ case "${BUILD_TYPE}" in
             ENV_VARS="${ENV_VARS} -e VNC_RESOLUTION=${VNC_RESOLUTION}" 
         fi
         set -x 
-        docker run -it \
+        sudo docker run ${REMOVE_OPTION} ${MORE_OPTIONS} ${RUN_OPTION} \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
             ${privilegedString} \
