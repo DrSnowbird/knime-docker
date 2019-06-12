@@ -1,4 +1,4 @@
-# KNIME Analytics Platform 3.7.1+Java 8 (1.8.0_202) JDK+Maven 3.6+Python 3.5/2.7+pip 19.0+node 11.11+ npm 6.7+Gradle 5.2+X11 (Desktop)
+# KNIME (latest/3.7.2) + Java 8 (1.8.0_212) OpenJDK + Maven 3.6 + Python 3.6 + PIP3 19 + + npm 6 + node 11 + Gradle 5 + X11 (Desktop)
 
 [![](https://images.microbadger.com/badges/image/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own version badge on microbadger.com")
 
@@ -7,15 +7,15 @@
 
 # Components:
 
-* [KNIME Platform](https://www.knime.com/download-knime-analytics-platform-sdk) latest (v 3.7.1) for Machine Learning & Big Data Analytics
-* java version "1.8.0_202"
-  Java(TM) SE Runtime Environment (build 1.8.0_202-b08)
-  Java HotSpot(TM) 64-Bit Server VM (build 25.202-b08, mixed mode)
+* [KNIME Platform](https://www.knime.com/download-knime-analytics-platform-sdk) latest (v 3.7.2) for Machine Learning & Big Data Analytics
+* openjdk version "1.8.0_212"
+  OpenJDK Runtime Environment (build 1.8.0_212-8u212-b01-1~deb9u1-b01)
+  OpenJDK 64-Bit Server VM (build 25.212-b01, mixed mode)
 * Apache Maven 3.6.0
-* Python 3.5.2 / Python 2.7.12 + pip 19.0.3
-* Node v11.11.0 + npm 6.7.0 (from NodeSource official Node Distribution)
-* Gradle 5.2
-* Other tools: git wget unzip vim python python-setuptools python-dev python-numpy 
+* Python 3.6 / Python 2.7 + pip 19.1 + Python3 virtual environments (venv, virtualenv, virtualenvwrapper, mkvirtualenv, ..., etc.)
+* Node v11.15.0 + npm 6.7.0 (from NodeSource official Node Distribution)
+* Gradle 5.3
+* Other tools: git wget unzip vim python python-setuptools python-dev python-numpy, ..., etc.
 
 # Run (recommended for easy-start)
 Image is pulling from openkbs/netbeans
