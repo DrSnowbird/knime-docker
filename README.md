@@ -1,4 +1,4 @@
-# KNIME (latest/4.0.1) + Java 8 (1.8.0_222) OpenJDK + Maven 3.6 + Python 3.6 + PIP3 19 + + npm 6 + node 12 + Gradle 5 + X11 (Desktop)
+# KNIME (latest/4.0.2) + Java 8 (1.8.0_222) OpenJDK + Maven 3.6 + Python 3.6 + PIP3 19 + + npm 6 + node 12 + Gradle 5 + X11 (Desktop)
 
 [![](https://images.microbadger.com/badges/image/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own version badge on microbadger.com")
 
@@ -143,56 +143,58 @@ More resource in X11 display of Eclipse on your host machine's OS, please see
 * You might see the warning message in the launching xterm console like below, you can just ignore it. I googles around and some blogs just suggested to ignore since the IDE still functional ok.
 
 # Releases information
-developer@4bff678914aa:~/workspace$ /usr/scripts/printVersions.sh 
+```
+developer@234b8e0e58e2:~/workspace$ /usr/scripts/printVersions.sh 
 + echo JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 + java -version
-openjdk version "1.8.0_212"
-OpenJDK Runtime Environment (build 1.8.0_212-8u212-b03-0ubuntu1.18.04.1-b03)
-OpenJDK 64-Bit Server VM (build 25.212-b03, mixed mode)
+openjdk version "1.8.0_222"
+OpenJDK Runtime Environment (build 1.8.0_222-8u222-b10-1ubuntu1~18.04.1-b10)
+OpenJDK 64-Bit Server VM (build 25.222-b10, mixed mode)
 + mvn --version
-Apache Maven 3.6.0 (97c98ec64a1fdfee7767ce5ffb20918da4f719f3; 2018-10-24T18:41:47Z)
-Maven home: /usr/apache-maven-3.6.0
-Java version: 1.8.0_212, vendor: Oracle Corporation, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre
+Apache Maven 3.6.2 (40f52333136460af0dc0d7232c0dc0bcf0d9e117; 2019-08-27T15:06:16Z)
+Maven home: /usr/apache-maven-3.6.2
+Java version: 1.8.0_222, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre
 Default locale: en, platform encoding: UTF-8
-OS name: "linux", version: "4.18.0-25-generic", arch: "amd64", family: "unix"
+OS name: "linux", version: "5.0.0-32-generic", arch: "amd64", family: "unix"
 + python -V
 Python 2.7.15rc1
 + python3 -V
 Python 3.6.7
 + pip --version
-pip 19.1.1 from /usr/local/lib/python3.6/dist-packages/pip (python 3.6)
+pip 19.2.3 from /usr/local/lib/python3.6/dist-packages/pip (python 3.6)
 + pip3 --version
-pip 19.1.1 from /usr/local/lib/python3.6/dist-packages/pip (python 3.6)
+pip 19.2.3 from /usr/local/lib/python3.6/dist-packages/pip (python 3.6)
 + gradle --version
 
-Welcome to Gradle 5.3.1!
+Welcome to Gradle 5.6.2!
 
 Here are the highlights of this release:
- - Feature variants AKA "optional dependencies"
- - Type-safe accessors in Kotlin precompiled script plugins
- - Gradle Module Metadata 1.0
+ - Incremental Groovy compilation
+ - Groovy compile avoidance
+ - Test fixtures for Java projects
+ - Manage plugin versions via settings script
 
-For more details see https://docs.gradle.org/5.3.1/release-notes.html
+For more details see https://docs.gradle.org/5.6.2/release-notes.html
 
 
 ------------------------------------------------------------
-Gradle 5.3.1
+Gradle 5.6.2
 ------------------------------------------------------------
 
-Build time:   2019-03-28 09:09:23 UTC
-Revision:     f2fae6ba563cfb772c8bc35d31e43c59a5b620c3
+Build time:   2019-09-05 16:13:54 UTC
+Revision:     55a5e53d855db8fc7b0e494412fc624051a8e781
 
-Kotlin:       1.3.21
+Kotlin:       1.3.41
 Groovy:       2.5.4
-Ant:          Apache Ant(TM) version 1.9.13 compiled on July 10 2018
-JVM:          1.8.0_212 (Oracle Corporation 25.212-b03)
-OS:           Linux 4.18.0-25-generic amd64
+Ant:          Apache Ant(TM) version 1.9.14 compiled on March 12 2019
+JVM:          1.8.0_222 (Private Build 25.222-b10)
+OS:           Linux 5.0.0-32-generic amd64
 
 + npm -v
-6.7.0
+6.10.3
 + node -v
-v11.15.0
+v12.10.0
 + cat /etc/lsb-release /etc/os-release
 DISTRIB_ID=Ubuntu
 DISTRIB_RELEASE=18.04
@@ -210,5 +212,4 @@ BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
 PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
 VERSION_CODENAME=bionic
 UBUNTU_CODENAME=bionic
-
 ```
