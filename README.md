@@ -1,19 +1,19 @@
-# KNIME (latest/4.1.1) + Java 8 (1.8.0_232) OpenJDK + Maven 3.6 + Python 3.6 + PIP3 19 + + npm 6 + node 13 + Gradle 6 + X11 (Desktop)
+# KNIME (latest/4.1) + Java 8 (1.8.0) OpenJDK + Maven 3.6 + Python 3.6 + PIP3 19 + + npm 6 + node 13 + Gradle 6 + X11 (Desktop)
 
 [![](https://images.microbadger.com/badges/image/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own version badge on microbadger.com")
 
-# Note: If you need to run KNIME Studio over Openshift, Kubernetes, container cluster platforms using noVNC from any HTML5 capable web browsers, you might want to check out:
-* [openkbs/knime-vnc-docker](https://hub.docker.com/r/openkbs/knime-vnc-docker/)
+# Just a suggestion: If you need to run KNIME Studio over Openshift, Kubernetes, or any container cluster platforms  using noVNC from any HTML5 web browsers-capable computers, tablets, mobile phones, or equipments/devices (e.g., maybe your lab special devices), you might want to check out:
+* [KNIME over VNC/NoVNC (by openkbs/knime-vnc-docker) ](https://hub.docker.com/r/openkbs/knime-vnc-docker/)
 
 # Components:
-
-* [KNIME Platform](https://www.knime.com/download-knime-analytics-platform-sdk) latest (v 4.1.1) for Machine Learning & Big Data Analytics
-* openjdk version "1.8.0_232"
-  OpenJDK Runtime Environment (build 1.8.0_232-8u232-b09-0ubuntu1~18.04.1-b09)
-  OpenJDK 64-Bit Server VM (build 25.232-b09, mixed mode)
+* [KNIME Platform](https://www.knime.com/download-knime-analytics-platform-sdk) latest (v 4.1) for Machine Learning & Big Data Analytics
+* Ubuntu 18.04 LTS now and we will use Ubuntu 20.04 on or about 2020-04-15 as LTS Docker base image.
+* openjdk version "1.8.0_242"
+  OpenJDK Runtime Environment (build 1.8.0_242-8u242-b08-0ubuntu3~18.04-b08)
+  OpenJDK 64-Bit Server VM (build 25.242-b08, mixed mode)
 * Apache Maven 3.6
 * Python 3.6 / Python 2.7 + pip 19.3 + Python3 virtual environments (venv, virtualenv, virtualenvwrapper, mkvirtualenv, ..., etc.)
-* Node v12.10.0 + npm 6.12.2 (from NodeSource official Node Distribution)
+* Node v13 + npm 6 (from NodeSource official Node Distribution)
 * Gradle 6
 * Other tools: git wget unzip vim python python-setuptools python-dev python-numpy, ..., etc.
 
@@ -25,10 +25,9 @@ Image is pulling from openkbs/netbeans
 ## Where are workspace and data?
 - The "./run.sh" will create and map the container's data and workspace directories to the host's directory as below (unless you change ./.env configuration).
 - You can copy source data or projects/workflow to these two directory and the KNIME Studio inside the container will have direct access to the files you just copy.
+
 ```
 $HOME/data-docker/knime-docker
-
-.
 ├── data
 └── workspace
     └── Example Workflows
@@ -38,7 +37,6 @@ $HOME/data-docker/knime-docker
         ├── Social Media
         ├── TheData
         └── workflowset.meta
-
 ```
 
 And, "docker-compose" will use the current git project directory's "./workspace" to map the container's /home/developer/workspace:
@@ -56,7 +54,7 @@ You can build your own image locally.
 ./build.sh
 ```
 
-# Reference
+# References
 * [KNIME](https://www.knime.com)
 * [KNIME Learning Center](https://www.knime.com/resources)
 * [KNIME Analytics Platform](https://www.knime.com/download-knime-analytics-platform-sdk)
@@ -74,7 +72,8 @@ You can build your own image locally.
 * [openkbs/eclipse-photon-vnc-docker](https://hub.docker.com/r/openkbs/eclipse-photon-vnc-docker/)
 * [openkbs/intellj-docker](https://hub.docker.com/r/openkbs/intellij-docker/)
 * [openkbs/intellj-vnc-docker](https://hub.docker.com/r/openkbs/intellij-vnc-docker/)
-* [openkbs/knime-vnc-docker](https://hub.docker.com/r/openkbs/knime-vnc-docker/)
+* [openkbs/knime-vnc-docker (VNC/NoVNC)](https://hub.docker.com/r/openkbs/knime-vnc-docker/)
+* [openkbs/knime-docker (X11/Desktop)](https://hub.docker.com/r/openkbs/knime-docker/)
 * [openkbs/netbeans10-docker](https://hub.docker.com/r/openkbs/netbeans10-docker/)
 * [openkbs/netbeans](https://hub.docker.com/r/openkbs/netbeans/)
 * [openkbs/papyrus-sysml-docker](https://hub.docker.com/r/openkbs/papyrus-sysml-docker/)
@@ -94,27 +93,27 @@ More resource in X11 display of Eclipse on your host machine's OS, please see
 
 # Releases information
 ```
-developer@e8c91b1cb4d5:~/workspace$ /usr/scripts/printVersions.sh 
+developer@b7c2f9c9eb3a:~/workspace$ /usr/scripts/printVersions.sh 
 + echo JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 + java -version
-openjdk version "1.8.0_232"
-OpenJDK Runtime Environment (build 1.8.0_232-8u232-b09-0ubuntu1~18.04.1-b09)
-OpenJDK 64-Bit Server VM (build 25.232-b09, mixed mode)
+openjdk version "1.8.0_242"
+OpenJDK Runtime Environment (build 1.8.0_242-8u242-b08-0ubuntu3~18.04-b08)
+OpenJDK 64-Bit Server VM (build 25.242-b08, mixed mode)
 + mvn --version
 Apache Maven 3.6.3 (cecedd343002696d0abb50b32b541b8a6ba2883f)
 Maven home: /usr/apache-maven-3.6.3
-Java version: 1.8.0_232, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre
+Java version: 1.8.0_242, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre
 Default locale: en, platform encoding: UTF-8
-OS name: "linux", version: "5.3.0-28-generic", arch: "amd64", family: "unix"
+OS name: "linux", version: "5.3.0-42-generic", arch: "amd64", family: "unix"
 + python -V
 Python 2.7.15+
 + python3 -V
 Python 3.6.9
 + pip --version
-pip 19.3.1 from /usr/local/lib/python3.6/dist-packages/pip (python 3.6)
+pip 20.0.2 from /usr/local/lib/python3.6/dist-packages/pip (python 3.6)
 + pip3 --version
-pip 19.3.1 from /usr/local/lib/python3.6/dist-packages/pip (python 3.6)
+pip 20.0.2 from /usr/local/lib/python3.6/dist-packages/pip (python 3.6)
 + gradle --version
 
 Welcome to Gradle 6.0.1!
@@ -144,13 +143,13 @@ Revision:     fad121066a68c4701acd362daf4287a7c309a0f5
 Kotlin:       1.3.50
 Groovy:       2.5.8
 Ant:          Apache Ant(TM) version 1.10.7 compiled on September 1 2019
-JVM:          1.8.0_232 (Private Build 25.232-b09)
-OS:           Linux 5.3.0-28-generic amd64
+JVM:          1.8.0_242 (Private Build 25.242-b08)
+OS:           Linux 5.3.0-42-generic amd64
 
 + npm -v
-6.13.4
+6.13.7
 + node -v
-v13.5.0
+v13.9.0
 + cat /etc/lsb-release /etc/os-release
 DISTRIB_ID=Ubuntu
 DISTRIB_RELEASE=18.04
