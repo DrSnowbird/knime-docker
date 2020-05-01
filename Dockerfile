@@ -37,7 +37,9 @@ RUN sudo wget -q -c ${DOWNLOAD_URL} && \
     sudo tar xvf $(basename ${DOWNLOAD_URL}) && \
     sudo rm $(basename ${DOWNLOAD_URL} )
 
-RUN sudo apt-get update -y && sudo apt-get install -y libwebkitgtk-3.0-0
+#.. libwebkitgtk-3.0-0 causing hub.docker.io build failure. Workaround: disable it.
+RUN sudo apt-get install -y apt-transport-https && \
+    sudo apt-get install -y libwebkitgtk-3.0-0
 
 VOLUME ${WORKSPACE}
 
