@@ -25,6 +25,9 @@ ENV PRODUCT_EXE=${PRODUCT_EXE}
 ARG INSTALL_BASE=${INSTALL_BASE:-/opt}
 ENV INSTALL_BASE=${INSTALL_BASE}
 
+####################################
+#### ---- Install product: ---- ####
+####################################
 ## --- Product Version specific ---
 # ENV DOWNLOAD_URL=https://download.knime.org/analytics-platform/linux/knime_4.1.1.linux.gtk.x86_64.tar.gz
 # ENV DOWNLOAD_URL=https://download.knime.org/analytics-platform/linux/knime-latest-linux.gtk.x86_64.tar.gz
@@ -37,8 +40,12 @@ RUN sudo wget -q -c ${DOWNLOAD_URL} && \
     sudo tar xvf $(basename ${DOWNLOAD_URL}) && \
     sudo rm $(basename ${DOWNLOAD_URL} )
 
-RUN sudo apt-get update -y && \
-    sudo apt-get install -y libwebkitgtk-3.0-0
+#########################################
+#### ---- Addition Libs/Plugins ---- ####
+#########################################
+## -- hub.docker build having issue; temporarily remove these two lines --
+#RUN sudo apt-get update -y && \
+#    sudo apt-get install -y libwebkitgtk-3.0-0
 
 VOLUME ${WORKSPACE}
 
