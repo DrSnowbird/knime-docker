@@ -290,6 +290,17 @@ function cutomizedVolume() {
     fi
 }
 
+function checkHostVolumePath() {
+    _left=$1
+    mkdir -p ${_left}
+    sudo chown -R $USER:$USER ${_left}
+    if [ -s ${_left} ]; then 
+        ls -al ${_left}
+    else 
+        echo "*** ERROR: ${_left}: Not existing!"
+    fi
+}
+
 function generateVolumeMapping() {
     if [ "$VOLUMES_LIST" == "" ]; then
         ## -- If locally defined in this file, then respect that first.
@@ -297,57 +308,60 @@ function generateVolumeMapping() {
         VOLUMES_LIST=`cat ${DOCKER_ENV_FILE}|grep "^#VOLUMES_LIST= *"|sed "s/[#\"]//g"|cut -d'=' -f2-`
     fi
     for vol in $VOLUMES_LIST; do
-        debug "$vol"
+        echo
+        echo ">>>>>>>>> $vol"
         hasColon=`echo $vol|grep ":"`
         ## -- allowing change local volume directories --
         if [ "$hasColon" != "" ]; then
             if [ "`echo $vol|grep 'volume-'`" != "" ]; then
                 cutomizedVolume $vol
             else
+                echo "************* hasColon=$hasColon"
                 left=`echo $vol|cut -d':' -f1`
                 right=`echo $vol|cut -d':' -f2`
-                leftHasDot=`echo $left|grep "\./"`
+                leftHasDot=`echo $left|grep "^\./"`
                 if [ "$leftHasDot" != "" ]; then
                     ## has "./data" on the left
+                    debug "******** A. Left HAS Dot pattern: leftHasDot=$leftHasDot"
                     if [[ ${right} == "/"* ]]; then
                         ## -- pattern like: "./data:/containerPath/data"
-                        debug "-- pattern like ./data:/data --"
-                        VOLUME_MAP="${VOLUME_MAP} -v `pwd`/${left}:${right}"
+                        echo "******* A-1 -- pattern like ./data:/data --"
+                        VOLUME_MAP="${VOLUME_MAP} -v `pwd`/${left#./}:${right}"
                     else
                         ## -- pattern like: "./data:data"
-                        debug "-- pattern like ./data:data --"
-                        VOLUME_MAP="${VOLUME_MAP} -v `pwd`/${left}:${DOCKER_VOLUME_DIR}/${right}"
+                        echo "******* A-2 -- pattern like ./data:data --"
+                        VOLUME_MAP="${VOLUME_MAP} -v `pwd`/${left#./}:${DOCKER_VOLUME_DIR}/${right}"
                     fi
-                    mkdir -p `pwd`/${left}
-                    if [ $DEBUG -gt 0 ]; then ls -al `pwd`/${left}; fi
+                    checkHostVolumePath "`pwd`/${left}"
                 else
                     ## No "./data" on the left
+                    debug "******** B. Left  No ./data on the left: leftHasDot=$leftHasDot"
+                    leftHasAbsPath=`echo $left|grep "^/.*"`
                     if [ "$leftHasAbsPath" != "" ]; then
-                        ## Has pattern like "/data" on the left
+                        debug "******* B-1 ## Has pattern like /data on the left "
                         if [[ ${right} == "/"* ]]; then
                             ## -- pattern like: "/data:/containerPath/data"
-                            debug "-- pattern like /data:/containerPath/data --"
+                            echo "****** B-1-a pattern like /data:/containerPath/data --"
                             VOLUME_MAP="${VOLUME_MAP} -v ${left}:${right}"
                         else
                             ## -- pattern like: "/data:data"
-                            debug "-- pattern like /data:data --"
+                            echo "----- B-1-b pattern like /data:data --"
                             VOLUME_MAP="${VOLUME_MAP} -v ${left}:${DOCKER_VOLUME_DIR}/${right}"
                         fi
-                        mkdir -p ${LOCAL_VOLUME_DIR}/${left}
-                        if [ $DEBUG -gt 0 ]; then ls -al ${LOCAL_VOLUME_DIR}/${left}; fi
+                        checkHostVolumePath "${left}"
                     else
-                        ## No pattern like "/data" on the left
+                        debug "******* B-2 ## No pattern like /data on the left"
+                        rightHasAbsPath=`echo $right|grep "^/.*"`
+                        debug ">>>>>>>>>>>>> rightHasAbsPath=$rightHasAbsPath"
                         if [[ ${right} == "/"* ]]; then
-                            ## -- pattern like: "data:/containerPath/data"
+                            echo "****** B-2-a pattern like: data:/containerPath/data"
                             debug "-- pattern like ./data:/data --"
                             VOLUME_MAP="${VOLUME_MAP} -v ${LOCAL_VOLUME_DIR}/${left}:${right}"
                         else
-                            ## -- pattern like: "data:data"
-                            debug "-- pattern like data:data --"
+                            debug "****** B-2-b ## -- pattern like: data:data"
                             VOLUME_MAP="${VOLUME_MAP} -v ${LOCAL_VOLUME_DIR}/${left}:${DOCKER_VOLUME_DIR}/${right}"
                         fi
-                        mkdir -p ${LOCAL_VOLUME_DIR}/${left}
-                        if [ $DEBUG -gt 0 ]; then ls -al ${LOCAL_VOLUME_DIR}/${left}; fi
+                        checkHostVolumePath "${left}"
                     fi
                 fi
             fi
@@ -357,7 +371,8 @@ function generateVolumeMapping() {
             VOLUME_MAP="${VOLUME_MAP} -v ${LOCAL_VOLUME_DIR}/$vol:${DOCKER_VOLUME_DIR}/$vol"
             mkdir -p ${LOCAL_VOLUME_DIR}/$vol
             if [ $DEBUG -gt 0 ]; then ls -al ${LOCAL_VOLUME_DIR}/$vol; fi
-        fi
+        fi       
+        echo ">>> expanded VOLUME_MAP: ${VOLUME_MAP}"
     done
 }
 #### ---- Generate Volumes Mapping ----
@@ -713,7 +728,6 @@ case "${BUILD_TYPE}" in
         sudo docker run \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
-            --network host \
             ${REMOVE_OPTION} ${RUN_OPTION} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} \
             ${X11_OPTION} ${MEDIA_OPTIONS} \
             ${privilegedString} \

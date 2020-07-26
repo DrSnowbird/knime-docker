@@ -1,4 +1,4 @@
-# KNIME (latest/4.1) + Java 8 (1.8.0) OpenJDK + Maven 3.6 + Python 3.6 + PIP3 19 + + npm 6 + node 13 + Gradle 6 + X11 (Desktop)
+# KNIME (latest/4.2) + Java 8 (1.8.0) OpenJDK + Maven 3.6 + Python 3.6 + PIP3 19 + + npm 6 + node 13 + Gradle 6 + X11 (Desktop)
 
 [![](https://images.microbadger.com/badges/image/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own version badge on microbadger.com")
 
@@ -6,7 +6,7 @@
 * [KNIME over VNC/NoVNC (by openkbs/knime-vnc-docker) ](https://hub.docker.com/r/openkbs/knime-vnc-docker/)
 
 # Components:
-* [KNIME Platform](https://www.knime.com/download-knime-analytics-platform-sdk) latest (v 4.1) for Machine Learning & Big Data Analytics
+* [KNIME Platform](https://www.knime.com/download-knime-analytics-platform-sdk) latest (v 4.2) for Machine Learning & Big Data Analytics
 * Ubuntu 18.04 LTS now and we will use Ubuntu 20.04 on or about 2020-04-15 as LTS Docker base image.
 * openjdk version "1.8.0_252"
   OpenJDK Runtime Environment (build 1.8.0_252-8u252-b09-1~18.04-b09)
