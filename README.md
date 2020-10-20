@@ -6,17 +6,12 @@
 * [KNIME over VNC/NoVNC (by openkbs/knime-vnc-docker) ](https://hub.docker.com/r/openkbs/knime-vnc-docker/)
 
 # Components:
-* [KNIME Platform](https://www.knime.com/download-knime-analytics-platform-sdk) latest (v 4.2) for Machine Learning & Big Data Analytics
+* [KNIME Platform](https://www.knime.com/download-knime-analytics-platform-sdk) latest (v 4.2.2) for Machine Learning & Big Data Analytics
 * Ubuntu 18.04 LTS now and we will use Ubuntu 20.04 on or about 2020-04-15 as LTS Docker base image.
-* openjdk version "1.8.0_252"
-  OpenJDK Runtime Environment (build 1.8.0_252-8u252-b09-1~18.04-b09)
-  OpenJDK 64-Bit Server VM (build 25.252-b09, mixed mode)
-* Apache Maven 3.6
-* Python 3.6 / Python 2.7 + pip 19.3 + Python3 virtual environments (venv, virtualenv, virtualenvwrapper, mkvirtualenv, ..., etc.)
-* Node v13 + npm 6 (from NodeSource official Node Distribution)
-* Gradle 6
-* Other tools: git wget unzip vim python python-setuptools python-dev python-numpy, ..., etc.
-
+* [Java openkbs/jdk-mvn-py3 - see README.md](https://github.com/DrSnowbird/jdk-mvn-py3/blob/master/README.md)
+* [Base Container Image: openkbs/jdk-mvn-py3](https://github.com/DrSnowbird/jdk-mvn-py3)
+* [Base Container Image: openkbs/jdk-mvn-py3-x11](https://github.com/DrSnowbird/jdk-mvn-py3-x11)
+* [Base Components: OpenJDK, Python 3, PIP, Node/NPM, Gradle, Maven, etc.](https://github.com/DrSnowbird/jdk-mvn-py3#components)
 # Run (recommended for easy-start)
 Image is pulled from openksb/knime-docker
 ```
@@ -88,87 +83,8 @@ You can build your own image locally.
 More resource in X11 display of Eclipse on your host machine's OS, please see
 * [X11 Display problem](https://askubuntu.com/questions/871092/failed-to-connect-to-mir-failed-to-connect-to-server-socket-no-such-file-or-di)
 * [X11 Display with Xhost](http://www.ethicalhackx.com/fix-gtk-warning-cannot-open-display/)
-
 * You might see the warning message in the launching xterm console like below, you can just ignore it. I googles around and some blogs just suggested to ignore since the IDE still functional ok.
 
 # Releases information
-```
-developer@5292c62873a0:~/workspace$ /usr/scripts/printVersions.sh 
-+ echo JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-+ whereis java
-java: /usr/bin/java /usr/share/java /usr/lib/jvm/java-8-openjdk-amd64/bin/java /usr/share/man/man1/java.1.gz
-+ echo
+See [Release information](https://github.com/DrSnowbird/jdk-mvn-py3#releases-information)
 
-+ java -version
-openjdk version "1.8.0_252"
-OpenJDK Runtime Environment (build 1.8.0_252-8u252-b09-1~18.04-b09)
-OpenJDK 64-Bit Server VM (build 25.252-b09, mixed mode)
-+ mvn --version
-Apache Maven 3.6.3 (cecedd343002696d0abb50b32b541b8a6ba2883f)
-Maven home: /usr/apache-maven-3.6.3
-Java version: 1.8.0_252, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre
-Default locale: en, platform encoding: UTF-8
-OS name: "linux", version: "5.3.0-53-generic", arch: "amd64", family: "unix"
-+ python -V
-Python 2.7.17
-+ python3 -V
-Python 3.6.9
-+ pip --version
-pip 20.0.2 from /usr/local/lib/python3.6/dist-packages/pip (python 3.6)
-+ pip3 --version
-pip 20.0.2 from /usr/local/lib/python3.6/dist-packages/pip (python 3.6)
-+ gradle --version
-
-Welcome to Gradle 6.0.1!
-
-Here are the highlights of this release:
- - Substantial improvements in dependency management, including
-   - Publishing Gradle Module Metadata in addition to pom.xml
-   - Advanced control of transitive versions
-   - Support for optional features and dependencies
-   - Rules to tweak published metadata
- - Support for Java 13
- - Faster incremental Java and Groovy compilation
- - New Zinc compiler for Scala
- - VS2019 support
- - Support for Gradle Enterprise plugin 3.0
-
-For more details see https://docs.gradle.org/6.0.1/release-notes.html
-
-
-------------------------------------------------------------
-Gradle 6.0.1
-------------------------------------------------------------
-
-Build time:   2019-11-18 20:25:01 UTC
-Revision:     fad121066a68c4701acd362daf4287a7c309a0f5
-
-Kotlin:       1.3.50
-Groovy:       2.5.8
-Ant:          Apache Ant(TM) version 1.10.7 compiled on September 1 2019
-JVM:          1.8.0_252 (Private Build 25.252-b09)
-OS:           Linux 5.3.0-53-generic amd64
-
-+ npm -v
-6.14.4
-+ node -v
-v14.0.0
-+ cat /etc/lsb-release /etc/os-release
-DISTRIB_ID=Ubuntu
-DISTRIB_RELEASE=18.04
-DISTRIB_CODENAME=bionic
-DISTRIB_DESCRIPTION="Ubuntu 18.04.4 LTS"
-NAME="Ubuntu"
-VERSION="18.04.4 LTS (Bionic Beaver)"
-ID=ubuntu
-ID_LIKE=debian
-PRETTY_NAME="Ubuntu 18.04.4 LTS"
-VERSION_ID="18.04"
-HOME_URL="https://www.ubuntu.com/"
-SUPPORT_URL="https://help.ubuntu.com/"
-BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
-PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
-VERSION_CODENAME=bionic
-UBUNTU_CODENAME=bionic
-```
