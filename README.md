@@ -1,12 +1,19 @@
-# KNIME (latest/4.3.0) + Java 8 (1.8.0) OpenJDK + Maven 3.6 + Python 3.6 + PIP3 19 + + npm 6 + node 13 + Gradle 6 + X11 (Desktop)
+# KNIME (latest/4.3.2) + Java 8 (1.8.0) OpenJDK + Maven 3.6 + Python 3.6 + PIP3 20 + npm 7 + node 15 + Gradle 6 + X11 (Desktop)
 
 [![](https://images.microbadger.com/badges/image/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own version badge on microbadger.com")
 
-# Just a suggestion: If you need to run KNIME Studio over Openshift, Kubernetes, or any container cluster platforms  using noVNC from any HTML5 web browsers-capable computers, tablets, mobile phones, or equipments/devices (e.g., maybe your lab special devices), you might want to check out:
-* [KNIME over VNC/NoVNC (by openkbs/knime-vnc-docker) ](https://hub.docker.com/r/openkbs/knime-vnc-docker/)
+## Also, Web-Browser-based (VNC/NoVNC) KNIME Docker: 
+* [KNIME over VNC/NoVNC (by openkbs/knime-vnc-docker) ](https://hub.docker.com/r/openkbs/knime-vnc-docker/):
+    * Providing users to use KNIME on `any (literally)` HTML5 Web browser-capable computers, laptop, tablets, smartphone phones (iPhone etc.), or lab special devices/equipments with Web Browsers).
+    * The KNIME-VNC-docker will be running remote in cloud cluster node.
+    * You can deploy KNIME Studio over Openshift, Kubernetes, or any container cluster platforms.
+
+## Join, Share, and Support the Community: 
+* [KNIME Blogs](https://www.knime.com/blog)
+* [Join the Community at KNIME web site](https://www.knime.com/knime-community)
 
 # Components:
-* [KNIME Platform](https://www.knime.com/download-knime-analytics-platform-sdk) latest (v 4.3.0) for Machine Learning & Big Data Analytics
+* [KNIME Platform](https://www.knime.com/download-knime-analytics-platform-sdk) latest (v 4.3.2) for Machine Learning & Big Data Analytics
 * Ubuntu 18.04 LTS now as LTS Docker base image.
 * [Java openkbs/jdk-mvn-py3 - see README.md](https://github.com/DrSnowbird/jdk-mvn-py3/blob/master/README.md)
 * [Base Container Image: openkbs/jdk-mvn-py3](https://github.com/DrSnowbird/jdk-mvn-py3)
