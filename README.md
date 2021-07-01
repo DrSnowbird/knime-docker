@@ -3,7 +3,7 @@
 * [`Help UNICEF’s COVID-19 Response`](https://donate.unicef.org/)
 * [`Help Red Cross`](https://www.redcross.org/donate)
 
-# KNIME (latest/4.3.3) + Java 8 (1.8.0) OpenJDK + Maven 3.6 + Python 3.6 + PIP3 20 + npm 7 + node 15 + Gradle 6 + X11 (Desktop)
+# KNIME (latest/4.4.0) + Java 8 (1.8.0) OpenJDK + Maven 3.6 + Python 3.6 + PIP3 20 + npm 7 + node 15 + Gradle 6 + X11 (Desktop)
 
 [![](https://images.microbadger.com/badges/image/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own version badge on microbadger.com")
 
