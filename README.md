@@ -1,13 +1,8 @@
-# `Please consider to donate what you can to help UNICEF, WHO, and Red Cross if you like what we provide to you for free. Thanks so much!`
-* [`World Health Organization (WHO) COVID-19 Solidarity Response Fund`](https://www.who.int/emergencies/diseases/novel-coronavirus-2019/donate)
-* [`Help UNICEF’s COVID-19 Response`](https://donate.unicef.org/)
-* [`Help Red Cross`](https://www.redcross.org/donate)
-
-# KNIME (latest/4.4.0) + Java 8 (1.8.0) OpenJDK + Maven 3.6 + Python 3.6 + PIP3 20 + npm 7 + node 15 + Gradle 6 + X11 (Desktop)
+# KNIME (latest/4.4.1) + Java 11 (1.8.0) OpenJDK + Maven 3.6 + Python 3.6 + PIP3 20 + npm 7 + node 16 + Gradle 6 + X11 (Desktop)
 
 [![](https://images.microbadger.com/badges/image/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/knime-docker.svg)](https://microbadger.com/images/openkbs/knime-docker "Get your own version badge on microbadger.com")
 
-## Also, Web-Browser-based (VNC/NoVNC) KNIME Docker: 
+## (See also) Web-Browser-based (VNC/NoVNC) KNIME Docker: 
 * [KNIME over VNC/NoVNC (by openkbs/knime-vnc-docker) ](https://hub.docker.com/r/openkbs/knime-vnc-docker/):
     * Providing users to use KNIME on `any (literally)` HTML5 Web browser-capable computers, laptop, tablets, smartphone phones (iPhone etc.), or lab special devices/equipments with Web Browsers).
     * The KNIME-VNC-docker will be running remote in cloud cluster node.
@@ -24,6 +19,17 @@
 * [Base Container Image: openkbs/jdk-mvn-py3](https://github.com/DrSnowbird/jdk-mvn-py3)
 * [Base Container Image: openkbs/jdk-mvn-py3-x11](https://github.com/DrSnowbird/jdk-mvn-py3-x11)
 * [Base Components: OpenJDK, Python 3, PIP, Node/NPM, Gradle, Maven, etc.](https://github.com/DrSnowbird/jdk-mvn-py3#components)
+
+# NOTICE: Due to docker.hub.io not allowing free hosting anymore, you have to make your local build including the parent images:
+- [DrSnowbird/jdk11-mvn-py3](https://github.com/DrSnowbird/jdk11-mvn-py3), [GIT](git@github.com:DrSnowbird/jdk11-mvn-py3.git)
+- [DrSnowbird/jdk11-mvn-py3-X11](https://github.com/DrSnowbird/jdk11-mvn-py3-X11), [GIT](git@github.com:DrSnowbird/jdk11-mvn-py3-X11.git)
+
+# Build
+You can build your own image locally.
+```
+./build.sh
+```
+
 # Run (recommended for easy-start)
 Image is pulled from openksb/knime-docker
 ```
@@ -54,12 +60,6 @@ And, "docker-compose" will use the current git project directory's "./workspace"
 ``` 
 
 **Note: You can copy your KNIME workflow project in and out the workspaces and it is directly mapped into the container's /home/developer/workspace.**
-
-# Build
-You can build your own image locally.
-```
-./build.sh
-```
 
 # References
 * [KNIME](https://www.knime.com)
